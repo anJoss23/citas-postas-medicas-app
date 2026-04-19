@@ -1,0 +1,29 @@
+@model WebConsultasMedicas.Models.HorarioMedico
+
+@{
+    ViewData["Title"] = "Eliminar horario";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-3">¿Deseas eliminar este horario?</h2>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Médico</dt>
+            <dd class="col-sm-9">@($"{Model.Medico?.ApellidoPaterno} {Model.Medico?.ApellidoMaterno}, {Model.Medico?.Nombres}")</dd>
+            <dt class="col-sm-3">Especialidad</dt>
+            <dd class="col-sm-9">@Model.Especialidad?.Nombre</dd>
+            <dt class="col-sm-3">Día</dt>
+            <dd class="col-sm-9">D@Model.DiaSemana</dd>
+            <dt class="col-sm-3">Horas</dt>
+            <dd class="col-sm-9">@($"{Model.HoraInicio:hh\\:mm} - {Model.HoraFin:hh\\:mm}")</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdHorarioMedico" />
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+

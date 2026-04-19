@@ -1,0 +1,157 @@
+@{
+    ViewData["Title"] = "Panel administrativo";
+}
+
+<section class="dashboard-page">
+    <div class="dashboard-sidebar">
+        <div class="sidebar-card">
+            <span class="sidebar-kicker">Administraci&oacute;n</span>
+            <h1>Panel de citas m&eacute;dicas</h1>
+            <p>Una vista central para organizar la operaci&oacute;n diaria de tu cl&iacute;nica.</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-link active">Resumen general</a>
+            <a href="#" class="sidebar-link">Agenda del d&iacute;a</a>
+            <a href="#" class="sidebar-link">Pacientes</a>
+            <a href="#" class="sidebar-link">Doctores</a>
+            <a href="#" class="sidebar-link">Especialidades</a>
+            <a href="#" class="sidebar-link">Configuraci&oacute;n</a>
+        </nav>
+
+        <div class="sidebar-note">
+            <strong>Estado del sistema</strong>
+            <span>Vista inicial lista para seguir construyendo la l&oacute;gica real.</span>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <div class="dashboard-topbar">
+            <div>
+                <span class="section-kicker">Centro de control</span>
+                <h2>Bienvenido al panel administrativo</h2>
+            </div>
+            <div class="topbar-actions">
+                <a asp-controller="Auth" asp-action="Login" class="secondary-action">Cerrar sesi&oacute;n</a>
+                <button type="button" class="primary-action">Nueva cita</button>
+            </div>
+        </div>
+
+        <div class="dashboard-stats">
+            <article class="stat-card">
+                <span>Citas programadas</span>
+                <strong>28</strong>
+                <small>6 pendientes de confirmaci&oacute;n</small>
+            </article>
+            <article class="stat-card">
+                <span>Pacientes atendidos</span>
+                <strong>14</strong>
+                <small>Durante la jornada actual</small>
+            </article>
+            <article class="stat-card">
+                <span>Doctores activos</span>
+                <strong>7</strong>
+                <small>En consultorio hoy</small>
+            </article>
+            <article class="stat-card accent-card">
+                <span>Ocupaci&oacute;n del d&iacute;a</span>
+                <strong>82%</strong>
+                <small>Capacidad operativa utilizada</small>
+            </article>
+        </div>
+
+        <div class="dashboard-grid">
+            <section class="dashboard-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-kicker">Agenda</span>
+                        <h3>Pr&oacute;ximas citas</h3>
+                    </div>
+                    <a href="#" class="text-action">Ver calendario</a>
+                </div>
+
+                <div class="appointment-list">
+                    <article class="appointment-item">
+                        <div class="appointment-time">08:30</div>
+                        <div class="appointment-info">
+                            <strong>Mar&iacute;a Fernanda P&eacute;rez</strong>
+                            <span>Cardiolog&iacute;a con Dr. Ram&iacute;rez</span>
+                        </div>
+                        <span class="appointment-status confirmed">Confirmada</span>
+                    </article>
+
+                    <article class="appointment-item">
+                        <div class="appointment-time">09:15</div>
+                        <div class="appointment-info">
+                            <strong>Carlos Alberto G&oacute;mez</strong>
+                            <span>Medicina general con Dra. Torres</span>
+                        </div>
+                        <span class="appointment-status pending">Pendiente</span>
+                    </article>
+
+                    <article class="appointment-item">
+                        <div class="appointment-time">10:00</div>
+                        <div class="appointment-info">
+                            <strong>Luc&iacute;a Herrera Salas</strong>
+                            <span>Pediatr&iacute;a con Dr. Mendoza</span>
+                        </div>
+                        <span class="appointment-status confirmed">Confirmada</span>
+                    </article>
+                </div>
+            </section>
+
+            <section class="dashboard-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-kicker">Actividad</span>
+                        <h3>Resumen operativo</h3>
+                    </div>
+                </div>
+
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <strong>Recepci&oacute;n</strong>
+                        <span>3 pacientes en espera de registro.</span>
+                    </div>
+                    <div class="summary-card">
+                        <strong>Consultorios</strong>
+                        <span>2 consultorios libres para reasignaci&oacute;n.</span>
+                    </div>
+                    <div class="summary-card">
+                        <strong>Recordatorios</strong>
+                        <span>11 mensajes autom&aacute;ticos enviados hoy.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="dashboard-panel wide-panel">
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-kicker">Equipo m&eacute;dico</span>
+                        <h3>Disponibilidad por especialidad</h3>
+                    </div>
+                    <button type="button" class="secondary-action">Gestionar horarios</button>
+                </div>
+
+                <div class="availability-grid">
+                    <div class="availability-card">
+                        <strong>Cardiolog&iacute;a</strong>
+                        <span>2 especialistas disponibles</span>
+                    </div>
+                    <div class="availability-card">
+                        <strong>Pediatr&iacute;a</strong>
+                        <span>1 especialista disponible</span>
+                    </div>
+                    <div class="availability-card">
+                        <strong>Dermatolog&iacute;a</strong>
+                        <span>3 especialistas disponibles</span>
+                    </div>
+                    <div class="availability-card">
+                        <strong>Medicina general</strong>
+                        <span>4 consultorios activos</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,52 @@
+@model WebConsultasMedicas.Models.Usuario
+
+@{
+    ViewData["Title"] = "Editar usuario";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.IdUsuario" />
+
+            <div class="col-md-6">
+                <label class="form-label" for="correo">Correo</label>
+                <input id="correo" name="correo" value="@Model.Correo" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label" for="password">Nueva contraseña</label>
+                <input id="password" name="password" type="password" class="form-control" />
+                @if (ViewBag.ResetPasswordHint is string hint)
+                {
+                    <div class="form-text">@hint</div>
+                }
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label" for="idRol">Rol</label>
+                <select id="idRol" name="idRol" class="form-select" asp-items="ViewBag.Roles"></select>
+            </div>
+
+            <div class="col-12">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="estado" value="true" @(Model.Estado ? "checked" : "") />
+                    <input type="hidden" name="estado" value="false" />
+                    <label class="form-check-label">Activo</label>
+                </div>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

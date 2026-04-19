@@ -1,0 +1,25 @@
+@model WebConsultasMedicas.Models.Rol
+
+@{
+    ViewData["Title"] = "Eliminar rol";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-3">¿Deseas eliminar este rol?</h2>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Nombre</dt>
+            <dd class="col-sm-9">@Model.Nombre</dd>
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@(Model.Estado ? "Activo" : "Inactivo")</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdRol" />
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+

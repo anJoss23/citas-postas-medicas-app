@@ -1,0 +1,37 @@
+@model WebConsultasMedicas.Models.Rol
+
+@{
+    ViewData["Title"] = "Editar rol";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdRol" />
+
+            <div class="col-12">
+                <label asp-for="Nombre" class="form-label"></label>
+                <input asp-for="Nombre" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <div class="form-check">
+                    <input asp-for="Estado" class="form-check-input" />
+                    <label asp-for="Estado" class="form-check-label">Activo</label>
+                </div>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

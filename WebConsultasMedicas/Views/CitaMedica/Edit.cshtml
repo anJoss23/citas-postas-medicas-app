@@ -1,0 +1,64 @@
+@model WebConsultasMedicas.Models.CitaMedica
+
+@{
+    ViewData["Title"] = "Editar cita";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdCita" />
+            <input type="hidden" asp-for="FechaRegistro" />
+
+            <div class="col-md-6">
+                <label asp-for="IdPaciente" class="form-label">Paciente</label>
+                <select asp-for="IdPaciente" class="form-select" asp-items="ViewBag.Pacientes"></select>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="IdHorarioMedico" class="form-label">Horario médico</label>
+                <select asp-for="IdHorarioMedico" class="form-select" asp-items="ViewBag.Horarios"></select>
+                <div class="form-text">El médico y la especialidad se toman del horario seleccionado.</div>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="FechaCita" class="form-label">Fecha</label>
+                <input asp-for="FechaCita" class="form-control" type="date" />
+                <span asp-validation-for="FechaCita" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="HoraCita" class="form-label">Hora</label>
+                <input asp-for="HoraCita" class="form-control" type="time" />
+                <span asp-validation-for="HoraCita" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="IdEstadoCita" class="form-label">Estado</label>
+                <select asp-for="IdEstadoCita" class="form-select" asp-items="ViewBag.Estados"></select>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="MotivoConsulta" class="form-label">Motivo</label>
+                <input asp-for="MotivoConsulta" class="form-control" autocomplete="off" />
+                <span asp-validation-for="MotivoConsulta" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Observacion" class="form-label"></label>
+                <textarea asp-for="Observacion" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Observacion" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

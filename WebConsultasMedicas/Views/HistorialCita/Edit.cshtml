@@ -1,0 +1,52 @@
+@model WebConsultasMedicas.Models.HistorialCita
+
+@{
+    ViewData["Title"] = "Editar historial";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdHistorial" />
+
+            <div class="col-md-8">
+                <label asp-for="IdCita" class="form-label">Cita</label>
+                <select asp-for="IdCita" class="form-select" asp-items="ViewBag.Citas"></select>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="IdEstadoCita" class="form-label">Estado</label>
+                <select asp-for="IdEstadoCita" class="form-select" asp-items="ViewBag.Estados"></select>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="FechaCambio" class="form-label">Fecha cambio</label>
+                <input asp-for="FechaCambio" class="form-control" type="datetime-local" />
+                <span asp-validation-for="FechaCambio" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-8">
+                <label asp-for="UsuarioAccion" class="form-label">Usuario acción</label>
+                <input asp-for="UsuarioAccion" class="form-control" autocomplete="off" />
+                <span asp-validation-for="UsuarioAccion" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Observacion" class="form-label"></label>
+                <textarea asp-for="Observacion" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Observacion" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

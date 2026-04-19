@@ -1,0 +1,197 @@
+@{
+    var currentController = (ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty).ToLowerInvariant();
+    var currentAction = (ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty).ToLowerInvariant();
+    var isInicio = currentController == "admin" && currentAction == "inicio";
+    var isEspecialidad = currentController == "especialidad";
+    var isTurno = currentController == "turno";
+    var isEstadoCita = currentController == "estadocita";
+    var isRol = currentController == "rol";
+    var isUsuario = currentController == "usuario";
+
+    var isMedico = currentController == "medico";
+    var isPaciente = currentController == "paciente";
+
+    var isHorarioMedico = currentController == "horariomedico";
+    var isCitaMedica = currentController == "citamedica";
+    var isHistorialCita = currentController == "historialcita";
+
+    var mantenimientoExpanded = isEspecialidad || isTurno || isEstadoCita || isRol || isUsuario;
+    var personalExpanded = isMedico || isPaciente;
+    var agendaExpanded = isHorarioMedico || isCitaMedica || isHistorialCita;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebConsultasMedicas</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebConsultasMedicas.styles.css" asp-append-version="true" />
+</head>
+<body class="admin-body">
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <div class="admin-brand">
+                <span class="brand-symbol">WM</span>
+                <div class="brand-text">
+                    <strong>Admin</strong>
+                    <small>SISCitasWeb</small>
+                </div>
+            </div>
+
+            <nav class="admin-nav">
+                <a class="admin-link @(isInicio ? "active" : "")" asp-controller="Admin" asp-action="Inicio">
+                    <span class="admin-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                            <path d="M12 3 3 10v11h6v-6h6v6h6V10l-9-7z" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <span>Inicio</span>
+                </a>
+
+                <button class="admin-link admin-link-toggle @(mantenimientoExpanded ? "" : "collapsed")"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#admin-mantenimiento"
+                        aria-expanded="@(mantenimientoExpanded.ToString().ToLowerInvariant())"
+                        aria-controls="admin-mantenimiento">
+                    <span class="admin-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                            <path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.6 3.1 5.9L8 22h8l-.1-7.1A7 7 0 0 0 19 9a7 7 0 0 0-7-7zm3 18H9v-3h6v3zm.2-7H8.8A5 5 0 1 1 17 9c0 1.7-.9 3.3-2.3 4z" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <span class="flex-grow-1 text-start">Mantenimiento</span>
+                    <span class="admin-chevron" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </button>
+
+                <div class="collapse @(mantenimientoExpanded ? "show" : "")" id="admin-mantenimiento">
+                    <a class="admin-sublink @(isEspecialidad ? "active" : "")" asp-controller="Especialidad" asp-action="Index">
+                        Especialidad
+                    </a>
+                    <a class="admin-sublink @(isTurno ? "active" : "")" asp-controller="Turno" asp-action="Index">
+                        Turno
+                    </a>
+                    <a class="admin-sublink @(isEstadoCita ? "active" : "")" asp-controller="EstadoCita" asp-action="Index">
+                        Estado de cita
+                    </a>
+                    <a class="admin-sublink @(isRol ? "active" : "")" asp-controller="Rol" asp-action="Index">
+                        Roles
+                    </a>
+                    <a class="admin-sublink @(isUsuario ? "active" : "")" asp-controller="Usuario" asp-action="Index">
+                        Usuarios
+                    </a>
+                </div>
+
+                <button class="admin-link admin-link-toggle @(personalExpanded ? "" : "collapsed")"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#admin-personal"
+                        aria-expanded="@(personalExpanded.ToString().ToLowerInvariant())"
+                        aria-controls="admin-personal">
+                    <span class="admin-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                            <path d="M16 11c1.7 0 3-1.3 3-3s-1.3-3-3-3-3 1.3-3 3 1.3 3 3 3zm-8 0c1.7 0 3-1.3 3-3S9.7 5 8 5 5 6.3 5 8s1.3 3 3 3zm0 2c-2.7 0-8 1.3-8 4v2h10v-2c0-1.3.5-2.4 1.4-3.3C10.6 13.3 9.1 13 8 13zm8 0c-.7 0-1.5.1-2.4.3 1.4 1 2.4 2.3 2.4 3.7v2h8v-2c0-2.7-5.3-4-8-4z" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <span class="flex-grow-1 text-start">Personal</span>
+                    <span class="admin-chevron" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </button>
+
+                <div class="collapse @(personalExpanded ? "show" : "")" id="admin-personal">
+                    <a class="admin-sublink @(isMedico ? "active" : "")" asp-controller="Medico" asp-action="Index">
+                        Médicos
+                    </a>
+                    <a class="admin-sublink @(isPaciente ? "active" : "")" asp-controller="Paciente" asp-action="Index">
+                        Pacientes
+                    </a>
+                </div>
+
+                <button class="admin-link admin-link-toggle @(agendaExpanded ? "" : "collapsed")"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#admin-agenda"
+                        aria-expanded="@(agendaExpanded.ToString().ToLowerInvariant())"
+                        aria-controls="admin-agenda">
+                    <span class="admin-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                            <path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 18H5V9h14v11zm0-13H5V6h14v1z" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <span class="flex-grow-1 text-start">Agenda</span>
+                    <span class="admin-chevron" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                            <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </span>
+                </button>
+
+                <div class="collapse @(agendaExpanded ? "show" : "")" id="admin-agenda">
+                    <a class="admin-sublink @(isHorarioMedico ? "active" : "")" asp-controller="HorarioMedico" asp-action="Index">
+                        Horarios médicos
+                    </a>
+                    <a class="admin-sublink @(isCitaMedica ? "active" : "")" asp-controller="CitaMedica" asp-action="Index">
+                        Citas médicas
+                    </a>
+                    <a class="admin-sublink @(isHistorialCita ? "active" : "")" asp-controller="HistorialCita" asp-action="Index">
+                        Historial de citas
+                    </a>
+                </div>
+
+                <div class="admin-divider"></div>
+
+                <a class="admin-link" asp-controller="Auth" asp-action="Login">
+                    <span class="admin-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" role="img" focusable="false">
+                            <path d="M10 17l1.4-1.4-2.6-2.6H21v-2H8.8l2.6-2.6L10 7l-7 7 7 7z" fill="currentColor" />
+                        </svg>
+                    </span>
+                    <span>Salir</span>
+                </a>
+            </nav>
+        </aside>
+
+        <div class="admin-main">
+            <header class="admin-topbar">
+                <div class="admin-title">
+                    <h1 class="h4 m-0">@ViewData["Title"]</h1>
+                </div>
+            </header>
+
+            <main class="admin-content" role="main">
+                @if (TempData["Success"] is string successMessage)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @successMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                }
+                @if (TempData["Error"] is string errorMessage)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @errorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                }
+
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

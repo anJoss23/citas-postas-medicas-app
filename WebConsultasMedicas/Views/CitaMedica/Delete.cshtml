@@ -1,0 +1,29 @@
+@model WebConsultasMedicas.Models.CitaMedica
+
+@{
+    ViewData["Title"] = "Eliminar cita";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-3">¿Deseas eliminar esta cita?</h2>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Fecha</dt>
+            <dd class="col-sm-9">@($"{Model.FechaCita:yyyy-MM-dd} {Model.HoraCita:hh\\:mm}")</dd>
+            <dt class="col-sm-3">Paciente</dt>
+            <dd class="col-sm-9">@($"{Model.Paciente?.ApellidoPaterno} {Model.Paciente?.ApellidoMaterno}, {Model.Paciente?.Nombres}")</dd>
+            <dt class="col-sm-3">Médico</dt>
+            <dd class="col-sm-9">@($"{Model.Medico?.ApellidoPaterno} {Model.Medico?.ApellidoMaterno}, {Model.Medico?.Nombres}")</dd>
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@Model.EstadoCita?.Nombre</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdCita" />
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+

@@ -1,0 +1,93 @@
+@model WebConsultasMedicas.Models.Paciente
+
+@{
+    ViewData["Title"] = "Editar paciente";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdPaciente" />
+
+            <div class="col-md-6">
+                <label asp-for="IdUsuario" class="form-label">Usuario</label>
+                <select asp-for="IdUsuario" class="form-select" asp-items="ViewBag.Usuarios"></select>
+                <span asp-validation-for="IdUsuario" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="DNI" class="form-label"></label>
+                <input asp-for="DNI" class="form-control" autocomplete="off" />
+                <span asp-validation-for="DNI" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="NumeroSIS" class="form-label">Número SIS</label>
+                <input asp-for="NumeroSIS" class="form-control" autocomplete="off" />
+                <span asp-validation-for="NumeroSIS" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="ApellidoPaterno" class="form-label"></label>
+                <input asp-for="ApellidoPaterno" class="form-control" autocomplete="off" />
+                <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="ApellidoMaterno" class="form-label"></label>
+                <input asp-for="ApellidoMaterno" class="form-control" autocomplete="off" />
+                <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Nombres" class="form-label"></label>
+                <input asp-for="Nombres" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Nombres" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="FechaNacimiento" class="form-label">Fecha nacimiento</label>
+                <input asp-for="FechaNacimiento" class="form-control" type="date" />
+                <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="Sexo" class="form-label"></label>
+                <select asp-for="Sexo" class="form-select">
+                    <option value="">-- Selecciona --</option>
+                    <option value="M">M</option>
+                    <option value="F">F</option>
+                </select>
+                <span asp-validation-for="Sexo" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="Telefono" class="form-label"></label>
+                <input asp-for="Telefono" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="Direccion" class="form-label"></label>
+                <input asp-for="Direccion" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <div class="form-check">
+                    <input asp-for="Estado" class="form-check-input" />
+                    <label asp-for="Estado" class="form-check-label">Activo</label>
+                </div>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

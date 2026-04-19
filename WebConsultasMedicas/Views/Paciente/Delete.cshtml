@@ -1,0 +1,27 @@
+@model WebConsultasMedicas.Models.Paciente
+
+@{
+    ViewData["Title"] = "Eliminar paciente";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-3">¿Deseas eliminar este paciente?</h2>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Paciente</dt>
+            <dd class="col-sm-9">@($"{Model.ApellidoPaterno} {Model.ApellidoMaterno}, {Model.Nombres}")</dd>
+            <dt class="col-sm-3">DNI</dt>
+            <dd class="col-sm-9">@Model.DNI</dd>
+            <dt class="col-sm-3">Usuario</dt>
+            <dd class="col-sm-9">@Model.Usuario?.Correo</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdPaciente" />
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+

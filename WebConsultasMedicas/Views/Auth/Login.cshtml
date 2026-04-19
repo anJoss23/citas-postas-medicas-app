@@ -1,0 +1,59 @@
+@{
+    ViewData["Title"] = "Iniciar sesi&oacute;n";
+}
+
+<section class="login-page">
+    <div class="login-hero">
+        <span class="login-badge">Gesti&oacute;n inteligente de citas m&eacute;dicas</span>
+        <h1>Bienvenido a tu espacio de trabajo de citas.</h1>
+        <p>
+            Organiza consultas, mant&eacute;n alineado a tu equipo m&eacute;dico y comienza cada d&iacute;a con una visi&oacute;n clara
+            de cada paciente agendado.
+        </p>
+
+        <div class="hero-metrics">
+            <div class="metric-card">
+                <strong>Citas</strong>
+                <span>Agenda diaria centralizada para cl&iacute;nicas y especialistas.</span>
+            </div>
+            <div class="metric-card">
+                <strong>Coordinaci&oacute;n</strong>
+                <span>Mant&eacute;n a recepci&oacute;n, doctores y pacientes en la misma sinton&iacute;a.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="login-card">
+        <div class="login-card-header">
+            <span class="login-kicker">Acceso profesional</span>
+            <h2>Iniciar sesi&oacute;n</h2>
+            <p>Ingresa tus credenciales para continuar al panel de citas m&eacute;dicas.</p>
+        </div>
+
+        <form class="login-form" method="post" asp-controller="Auth" asp-action="Login">
+            <div class="input-group-custom">
+                <label for="emailAddress">Correo electr&oacute;nico</label>
+                <input id="emailAddress" name="emailAddress" type="email" placeholder="doctor@clinic.com" />
+            </div>
+
+            <div class="input-group-custom">
+                <label for="password">Contrase&ntilde;a</label>
+                <input id="password" name="password" type="password" placeholder="Ingresa tu contrase&ntilde;a" />
+            </div>
+
+            <div class="login-options">
+                <label class="remember-session" for="rememberSession">
+                    <input id="rememberSession" name="rememberSession" type="checkbox" />
+                    <span>Mantener sesi&oacute;n activa</span>
+                </label>
+                <a href="#" class="login-link">&iquest;Necesitas ayuda?</a>
+            </div>
+
+            <button type="submit" class="login-submit-button">Ingresar a la plataforma</button>
+        </form>
+
+        <div class="login-card-footer">
+            <p>Acceso seguro para personal m&eacute;dico, asistentes y coordinadores de cl&iacute;nica.</p>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,75 @@
+@model WebConsultasMedicas.Models.HorarioMedico
+
+@{
+    ViewData["Title"] = "Editar horario";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form asp-action="Edit" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdHorarioMedico" />
+
+            <div class="col-md-6">
+                <label asp-for="IdMedico" class="form-label">Médico</label>
+                <select asp-for="IdMedico" class="form-select" asp-items="ViewBag.Medicos"></select>
+            </div>
+            <div class="col-md-6">
+                <div class="form-text pt-4">La especialidad se toma automáticamente del médico.</div>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="IdTurno" class="form-label">Turno</label>
+                <select asp-for="IdTurno" class="form-select" asp-items="ViewBag.Turnos"></select>
+            </div>
+
+            <div class="col-md-2">
+                <label asp-for="DiaSemana" class="form-label">Día</label>
+                <select asp-for="DiaSemana" class="form-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                </select>
+                <span asp-validation-for="DiaSemana" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="HoraInicio" class="form-label">Hora inicio</label>
+                <input asp-for="HoraInicio" class="form-control" type="time" />
+                <span asp-validation-for="HoraInicio" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="HoraFin" class="form-label">Hora fin</label>
+                <input asp-for="HoraFin" class="form-control" type="time" />
+                <span asp-validation-for="HoraFin" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-2">
+                <label asp-for="Cupos" class="form-label"></label>
+                <input asp-for="Cupos" class="form-control" type="number" min="1" />
+                <span asp-validation-for="Cupos" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <div class="form-check">
+                    <input asp-for="Estado" class="form-check-input" />
+                    <label asp-for="Estado" class="form-check-label">Activo</label>
+                </div>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

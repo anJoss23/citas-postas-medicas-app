@@ -1,0 +1,27 @@
+@model WebConsultasMedicas.Models.HistorialCita
+
+@{
+    ViewData["Title"] = "Eliminar historial";
+}
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-3">¿Deseas eliminar este registro de historial?</h2>
+        <dl class="row mb-4">
+            <dt class="col-sm-3">Cita</dt>
+            <dd class="col-sm-9">@Model.IdCita</dd>
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@Model.EstadoCita?.Nombre</dd>
+            <dt class="col-sm-3">Fecha cambio</dt>
+            <dd class="col-sm-9">@Model.FechaCambio.ToString("yyyy-MM-dd HH:mm")</dd>
+        </dl>
+
+        <form asp-action="Delete" method="post" class="d-flex gap-2">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdHistorial" />
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
