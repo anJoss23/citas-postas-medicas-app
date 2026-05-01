@@ -345,6 +345,9 @@ namespace WebConsultasMedicas.Migrations
                     b.Property<int>("IdEspecialidad")
                         .HasColumnType("int");
 
+                    b.Property<int?>("IdUsuario")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombres")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -365,6 +368,11 @@ namespace WebConsultasMedicas.Migrations
 
                     b.HasIndex("IdEspecialidad")
                         .HasDatabaseName("IX_Medico_IdEspecialidad");
+
+                    b.HasIndex("IdUsuario")
+                        .IsUnique()
+                        .HasDatabaseName("UQ_Medico_IdUsuario")
+                        .HasFilter("[IdUsuario] IS NOT NULL");
 
                     b.ToTable("Medico", (string)null);
                 });
@@ -497,6 +505,12 @@ namespace WebConsultasMedicas.Migrations
                             IdRol = 2,
                             Estado = true,
                             Nombre = "Paciente"
+                        },
+                        new
+                        {
+                            IdRol = 3,
+                            Estado = true,
+                            Nombre = "Medico"
                         });
                 });
 
@@ -713,7 +727,15 @@ namespace WebConsultasMedicas.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Medico_Especialidad");
 
+                    b.HasOne("WebConsultasMedicas.Models.Usuario", "Usuario")
+                        .WithOne("Medico")
+                        .HasForeignKey("WebConsultasMedicas.Models.Medico", "IdUsuario")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("FK_Medico_Usuario");
+
                     b.Navigation("Especialidad");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("WebConsultasMedicas.Models.Paciente", b =>
@@ -790,6 +812,8 @@ namespace WebConsultasMedicas.Migrations
 
             modelBuilder.Entity("WebConsultasMedicas.Models.Usuario", b =>
                 {
+                    b.Navigation("Medico");
+
                     b.Navigation("Paciente");
                 });
 #pragma warning restore 612, 618

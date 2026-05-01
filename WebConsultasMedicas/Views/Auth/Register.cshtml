@@ -1,0 +1,95 @@
+@model WebConsultasMedicas.Models.PatientRegisterViewModel
+
+@{
+    ViewData["Title"] = "Registro de paciente";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="h5 mb-3">Crear cuenta (Paciente)</h2>
+
+                <form method="post" asp-action="Register" class="row g-3">
+                    @Html.AntiForgeryToken()
+                    <div class="col-12">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="Correo" class="form-label">Correo</label>
+                        <input asp-for="Correo" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="Correo" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Password" class="form-label">Contraseña</label>
+                        <input asp-for="Password" class="form-control" type="password" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="DNI" class="form-label"></label>
+                        <input asp-for="DNI" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="DNI" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="NumeroSIS" class="form-label">Número SIS</label>
+                        <input asp-for="NumeroSIS" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="NumeroSIS" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="FechaNacimiento" class="form-label">Fecha nacimiento</label>
+                        <input asp-for="FechaNacimiento" class="form-control" type="date" />
+                        <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="ApellidoPaterno" class="form-label"></label>
+                        <input asp-for="ApellidoPaterno" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="ApellidoMaterno" class="form-label"></label>
+                        <input asp-for="ApellidoMaterno" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Nombres" class="form-label"></label>
+                        <input asp-for="Nombres" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="Nombres" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Sexo" class="form-label"></label>
+                        <select asp-for="Sexo" class="form-select">
+                            <option value="M">M</option>
+                            <option value="F">F</option>
+                        </select>
+                        <span asp-validation-for="Sexo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Telefono" class="form-label"></label>
+                        <input asp-for="Telefono" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="Telefono" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label asp-for="Direccion" class="form-label"></label>
+                        <input asp-for="Direccion" class="form-control" autocomplete="off" />
+                        <span asp-validation-for="Direccion" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Registrarme</button>
+                        <a asp-action="Login" class="btn btn-outline-secondary">Volver</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

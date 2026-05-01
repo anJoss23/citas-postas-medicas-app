@@ -29,7 +29,13 @@
                             <a class="nav-link app-nav-link" asp-area="" asp-controller="Auth" asp-action="Login">Iniciar sesi&oacute;n</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link app-nav-link" asp-area="" asp-controller="Auth" asp-action="Register">Registro</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link app-nav-link" asp-area="" asp-controller="Admin" asp-action="Dashboard">Panel</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link app-nav-link" asp-area="" asp-controller="Portal" asp-action="Buscar">Portal</a>
                         </li>
                     </ul>
                 </div>
@@ -38,6 +44,20 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["Success"] is string successMessage)
+            {
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    @successMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            }
+            @if (TempData["Error"] is string errorMessage)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    @errorMessage
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebConsultasMedicas.Data;
 using WebConsultasMedicas.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebConsultasMedicas.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class TurnoController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -35,9 +37,17 @@ public class TurnoController : Controller
         if (!ModelState.IsValid) return View(turno);
 
         _context.Turnos.Add(turno);
-        await _context.SaveChangesAsync();
-        TempData["Success"] = "Turno registrado.";
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Turno registrado.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException)
+        {
+            TempData["Error"] = "No se pudo guardar el turno.";
+            return View(turno);
+        }
     }
 
     public async Task<IActionResult> Edit(int? id)
@@ -58,9 +68,17 @@ public class TurnoController : Controller
         if (!ModelState.IsValid) return View(turno);
 
         _context.Entry(turno).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-        TempData["Success"] = "Turno actualizado.";
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Turno actualizado.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException)
+        {
+            TempData["Error"] = "No se pudo guardar el turno.";
+            return View(turno);
+        }
     }
 
     public async Task<IActionResult> Delete(int? id)
@@ -93,4 +111,3 @@ public class TurnoController : Controller
         return RedirectToAction(nameof(Index));
     }
 }
-

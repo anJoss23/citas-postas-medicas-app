@@ -1,0 +1,67 @@
+@model IReadOnlyList<WebConsultasMedicas.Models.HorarioMedico>
+@using System.Globalization
+
+@{
+    ViewData["Title"] = "Horarios";
+    var medico = ViewBag.Medico as WebConsultasMedicas.Models.Medico;
+}
+
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+    <div>
+        <h2 class="h5 mb-1">Horarios disponibles</h2>
+        @if (medico is not null)
+        {
+            <p class="text-muted mb-0">@($"{medico.Especialidad?.Nombre} / {medico.ApellidoPaterno} {medico.ApellidoMaterno}, {medico.Nombres}")</p>
+        }
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" asp-action="Buscar">Volver</a>
+        <a class="btn btn-outline-secondary" asp-action="MisCitas">Mis citas</a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 90px;">ID</th>
+                    <th style="width: 180px;">Fecha</th>
+                    <th style="width: 170px;">Horario</th>
+                    <th style="width: 120px;">Turno</th>
+                    <th style="width: 140px;" class="text-end">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">No hay horarios activos.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var h in Model)
+                    {
+                        var diaNombre = CultureInfo.GetCultureInfo("es-PE").DateTimeFormat.GetDayName(h.Fecha.ToDateTime(TimeOnly.MinValue).DayOfWeek);
+                        diaNombre = string.IsNullOrWhiteSpace(diaNombre) ? "" : char.ToUpper(diaNombre[0]) + diaNombre[1..];
+
+                        <tr>
+                            <td>@h.IdHorarioMedico</td>
+                            <td>
+                                <div class="fw-semibold">@diaNombre</div>
+                                <div class="text-muted small">@h.Fecha.ToString("yyyy-MM-dd")</div>
+                            </td>
+                            <td class="text-muted">@($"{h.HoraInicio:hh\\:mm} - {h.HoraFin:hh\\:mm}")</td>
+                            <td class="text-muted">@h.Turno?.Nombre</td>
+                            <td class="text-end">
+                                <a class="btn btn-sm btn-primary" asp-action="Reservar" asp-route-idHorarioMedico="@h.IdHorarioMedico">Reservar</a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

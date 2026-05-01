@@ -31,14 +31,24 @@
         </div>
 
         <form class="login-form" method="post" asp-controller="Auth" asp-action="Login">
+            @Html.AntiForgeryToken()
+
+            @if (TempData["Error"] is string errorMessage)
+            {
+                <div class="alert alert-danger" role="alert">@errorMessage</div>
+            }
+            @if (TempData["Success"] is string successMessage)
+            {
+                <div class="alert alert-success" role="alert">@successMessage</div>
+            }
             <div class="input-group-custom">
                 <label for="emailAddress">Correo electr&oacute;nico</label>
-                <input id="emailAddress" name="emailAddress" type="email" placeholder="doctor@clinic.com" />
+                <input id="emailAddress" name="emailAddress" type="email" placeholder="doctor@clinic.com" autocomplete="username" required />
             </div>
 
             <div class="input-group-custom">
                 <label for="password">Contrase&ntilde;a</label>
-                <input id="password" name="password" type="password" placeholder="Ingresa tu contrase&ntilde;a" />
+                <input id="password" name="password" type="password" placeholder="Ingresa tu contrase&ntilde;a" autocomplete="current-password" required />
             </div>
 
             <div class="login-options">
@@ -46,7 +56,7 @@
                     <input id="rememberSession" name="rememberSession" type="checkbox" />
                     <span>Mantener sesi&oacute;n activa</span>
                 </label>
-                <a href="#" class="login-link">&iquest;Necesitas ayuda?</a>
+                <a asp-controller="Auth" asp-action="Register" class="login-link">Crear cuenta</a>
             </div>
 
             <button type="submit" class="login-submit-button">Ingresar a la plataforma</button>

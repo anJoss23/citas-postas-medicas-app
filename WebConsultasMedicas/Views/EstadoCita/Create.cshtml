@@ -9,6 +9,9 @@
         <form asp-action="Create" method="post" class="row g-3">
             @Html.AntiForgeryToken()
             <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+            <div class="col-12">
                 <label asp-for="Nombre" class="form-label"></label>
                 <input asp-for="Nombre" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Nombre" class="text-danger"></span>
@@ -24,4 +27,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

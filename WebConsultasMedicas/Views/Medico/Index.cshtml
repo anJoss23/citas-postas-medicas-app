@@ -18,6 +18,7 @@
                     <th>CMP</th>
                     <th>Nombre</th>
                     <th>Especialidad</th>
+                    <th>Usuario</th>
                     <th>Contacto</th>
                     <th style="width: 110px;">Estado</th>
                     <th style="width: 180px;" class="text-end">Acciones</th>
@@ -39,6 +40,7 @@
                             <td class="fw-semibold">@item.CMP</td>
                             <td>@($"{item.ApellidoPaterno} {item.ApellidoMaterno}, {item.Nombres}")</td>
                             <td class="text-muted">@item.Especialidad?.Nombre</td>
+                            <td class="text-muted">@item.Usuario?.Correo</td>
                             <td class="text-muted">@($"{item.Telefono} {item.Correo}")</td>
                             <td>
                                 @if (item.Estado)

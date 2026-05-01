@@ -9,6 +9,9 @@
         <form asp-action="Edit" method="post" class="row g-3">
             @Html.AntiForgeryToken()
             <input type="hidden" name="id" value="@Model.IdUsuario" />
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
 
             <div class="col-md-6">
                 <label class="form-label" for="correo">Correo</label>
@@ -49,4 +52,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebConsultasMedicas.Data;
 using WebConsultasMedicas.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebConsultasMedicas.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class EstadoCitaController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -109,4 +111,3 @@ public class EstadoCitaController : Controller
         return RedirectToAction(nameof(Index));
     }
 }
-

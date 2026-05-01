@@ -10,6 +10,9 @@
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="IdCita" />
             <input type="hidden" asp-for="FechaRegistro" />
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
 
             <div class="col-md-6">
                 <label asp-for="IdPaciente" class="form-label">Paciente</label>

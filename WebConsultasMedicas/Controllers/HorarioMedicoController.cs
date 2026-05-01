@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebConsultasMedicas.Data;
 using WebConsultasMedicas.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebConsultasMedicas.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class HorarioMedicoController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -13,7 +15,7 @@ public class HorarioMedicoController : Controller
     public HorarioMedicoController(ApplicationDbContext context)
     {
         _context = context;
-    }
+}
 
     public async Task<IActionResult> Index()
     {
@@ -24,7 +26,7 @@ public class HorarioMedicoController : Controller
             .Include(h => h.Turno)
             .AsNoTracking()
             .OrderBy(h => h.IdMedico)
-            .ThenBy(h => h.DiaSemana)
+            .ThenBy(h => h.Fecha)
             .ThenBy(h => h.HoraInicio)
             .ToListAsync();
         return View(items);
@@ -34,12 +36,12 @@ public class HorarioMedicoController : Controller
     {
         ViewData["Title"] = "Nuevo horario";
         await LoadCombosAsync();
-        return View(new HorarioMedico { Estado = true, DiaSemana = 1, Cupos = 10 });
+        return View(new HorarioMedico { Estado = true, Fecha = DateOnly.FromDateTime(DateTime.Today.AddDays(1)) });
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("IdMedico,IdTurno,DiaSemana,HoraInicio,HoraFin,Cupos,Estado")] HorarioMedico item)
+    public async Task<IActionResult> Create([Bind("IdMedico,IdTurno,Fecha,HoraInicio,HoraFin,Estado")] HorarioMedico item)
     {
         ViewData["Title"] = "Nuevo horario";
         await LoadCombosAsync(item.IdMedico, item.IdTurno);
@@ -52,11 +54,57 @@ public class HorarioMedicoController : Controller
         ModelState.Remove(nameof(HorarioMedico.IdEspecialidad));
         if (!ModelState.IsValid) return View(item);
 
-        _context.HorariosMedicos.Add(item);
+        if (item.HoraFin <= item.HoraInicio)
+        {
+            ModelState.AddModelError(nameof(HorarioMedico.HoraFin), "La hora fin debe ser mayor a la hora inicio.");
+            return View(item);
+        }
+
+        var totalMinutes = (item.HoraFin.ToTimeSpan() - item.HoraInicio.ToTimeSpan()).TotalMinutes;
+        if (totalMinutes % 60 != 0)
+        {
+            ModelState.AddModelError(nameof(HorarioMedico.HoraFin), "El rango debe ser múltiplo de 1 hora.");
+            return View(item);
+        }
+
+        var slots = new List<HorarioMedico>();
+        var start = item.HoraInicio;
+        while (start < item.HoraFin)
+        {
+            var end = start.AddHours(1);
+            if (end > item.HoraFin) break;
+
+            slots.Add(new HorarioMedico
+            {
+                IdMedico = item.IdMedico,
+                IdEspecialidad = item.IdEspecialidad,
+                IdTurno = item.IdTurno,
+                Fecha = item.Fecha,
+                HoraInicio = start,
+                HoraFin = end,
+                Estado = item.Estado
+            });
+
+            start = end;
+        }
+
+        var starts = slots.Select(s => s.HoraInicio).ToList();
+        var existingStarts = await _context.HorariosMedicos.AsNoTracking()
+            .Where(h => h.IdMedico == item.IdMedico && h.Fecha == item.Fecha && starts.Contains(h.HoraInicio))
+            .Select(h => h.HoraInicio)
+            .ToListAsync();
+
+        if (existingStarts.Count > 0)
+        {
+            TempData["Error"] = $"Ya existen horarios para esas horas: {string.Join(", ", existingStarts.Select(t => t.ToString("HH:mm")))}.";
+            return View(item);
+        }
+
+        _context.HorariosMedicos.AddRange(slots);
         try
         {
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Horario registrado.";
+            TempData["Success"] = $"Horarios registrados: {slots.Count} bloque(s) de 1 hora.";
             return RedirectToAction(nameof(Index));
         }
         catch (DbUpdateException)
@@ -79,7 +127,7 @@ public class HorarioMedicoController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("IdHorarioMedico,IdMedico,IdTurno,DiaSemana,HoraInicio,HoraFin,Cupos,Estado")] HorarioMedico item)
+    public async Task<IActionResult> Edit(int id, [Bind("IdHorarioMedico,IdMedico,IdTurno,Fecha,HoraInicio,HoraFin,Estado")] HorarioMedico item)
     {
         if (id != item.IdHorarioMedico) return NotFound();
 
@@ -93,6 +141,12 @@ public class HorarioMedicoController : Controller
 
         ModelState.Remove(nameof(HorarioMedico.IdEspecialidad));
         if (!ModelState.IsValid) return View(item);
+
+        if (item.HoraFin <= item.HoraInicio)
+        {
+            ModelState.AddModelError(nameof(HorarioMedico.HoraFin), "La hora fin debe ser mayor a la hora inicio.");
+            return View(item);
+        }
 
         _context.Entry(item).State = EntityState.Modified;
         try

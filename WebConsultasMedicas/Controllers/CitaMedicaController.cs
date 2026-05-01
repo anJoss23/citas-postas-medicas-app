@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebConsultasMedicas.Data;
 using WebConsultasMedicas.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebConsultasMedicas.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class CitaMedicaController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -13,7 +15,7 @@ public class CitaMedicaController : Controller
     public CitaMedicaController(ApplicationDbContext context)
     {
         _context = context;
-    }
+}
 
     public async Task<IActionResult> Index()
     {
@@ -191,7 +193,7 @@ public class CitaMedicaController : Controller
             .Select(h => new
             {
                 h.IdHorarioMedico,
-                Nombre = $"{h.IdHorarioMedico} - {h.Medico.ApellidoPaterno} {h.Medico.ApellidoMaterno}, {h.Medico.Nombres} / {h.Especialidad.Nombre} (D{h.DiaSemana} {h.HoraInicio:hh\\:mm}-{h.HoraFin:hh\\:mm})"
+                Nombre = $"{h.IdHorarioMedico} - {h.Medico.ApellidoPaterno} {h.Medico.ApellidoMaterno}, {h.Medico.Nombres} / {h.Especialidad.Nombre} ({h.Fecha:yyyy-MM-dd} {h.HoraInicio:hh\\:mm}-{h.HoraFin:hh\\:mm})"
             })
             .ToListAsync();
 

@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebConsultasMedicas.Data;
 using WebConsultasMedicas.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebConsultasMedicas.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class PacienteController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -139,4 +141,3 @@ public class PacienteController : Controller
         ViewBag.Usuarios = new SelectList(usuarios, nameof(Usuario.IdUsuario), nameof(Usuario.Correo), selectedId);
     }
 }
-

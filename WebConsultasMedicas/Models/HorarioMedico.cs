@@ -15,17 +15,14 @@ public class HorarioMedico
     [Required]
     public int IdTurno { get; set; }
 
-    [Range(1, 7, ErrorMessage = "El día de semana debe estar entre 1 y 7.")]
-    public byte DiaSemana { get; set; }
+    [Required(ErrorMessage = "La fecha es obligatoria.")]
+    public DateOnly Fecha { get; set; }
 
     [Required]
     public TimeOnly HoraInicio { get; set; }
 
     [Required]
     public TimeOnly HoraFin { get; set; }
-
-    [Range(1, int.MaxValue, ErrorMessage = "Los cupos deben ser mayor a 0.")]
-    public int Cupos { get; set; } = 10;
 
     public bool Estado { get; set; } = true;
 
@@ -34,3 +31,4 @@ public class HorarioMedico
     public Turno Turno { get; set; } = null!;
     public ICollection<CitaMedica> Citas { get; set; } = new List<CitaMedica>();
 }
+

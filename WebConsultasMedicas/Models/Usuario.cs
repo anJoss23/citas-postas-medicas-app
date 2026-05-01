@@ -23,4 +23,5 @@ public class Usuario
 
     public Rol Rol { get; set; } = null!;
     public Paciente? Paciente { get; set; }
+    public Medico? Medico { get; set; }
 }

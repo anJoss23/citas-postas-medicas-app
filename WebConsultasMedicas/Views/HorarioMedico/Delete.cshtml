@@ -12,8 +12,8 @@
             <dd class="col-sm-9">@($"{Model.Medico?.ApellidoPaterno} {Model.Medico?.ApellidoMaterno}, {Model.Medico?.Nombres}")</dd>
             <dt class="col-sm-3">Especialidad</dt>
             <dd class="col-sm-9">@Model.Especialidad?.Nombre</dd>
-            <dt class="col-sm-3">Día</dt>
-            <dd class="col-sm-9">D@Model.DiaSemana</dd>
+            <dt class="col-sm-3">Fecha</dt>
+            <dd class="col-sm-9">@Model.Fecha.ToString("yyyy-MM-dd")</dd>
             <dt class="col-sm-3">Horas</dt>
             <dd class="col-sm-9">@($"{Model.HoraInicio:hh\\:mm} - {Model.HoraFin:hh\\:mm}")</dd>
         </dl>

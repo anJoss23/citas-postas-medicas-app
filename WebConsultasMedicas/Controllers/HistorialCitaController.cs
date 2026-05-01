@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebConsultasMedicas.Data;
 using WebConsultasMedicas.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebConsultasMedicas.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class HistorialCitaController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -45,9 +47,17 @@ public class HistorialCitaController : Controller
         if (!ModelState.IsValid) return View(item);
 
         _context.HistorialCitas.Add(item);
-        await _context.SaveChangesAsync();
-        TempData["Success"] = "Historial registrado.";
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Historial registrado.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException)
+        {
+            TempData["Error"] = "No se pudo guardar el historial.";
+            return View(item);
+        }
     }
 
     public async Task<IActionResult> Edit(int? id)
@@ -72,9 +82,17 @@ public class HistorialCitaController : Controller
         if (!ModelState.IsValid) return View(item);
 
         _context.Entry(item).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-        TempData["Success"] = "Historial actualizado.";
-        return RedirectToAction(nameof(Index));
+        try
+        {
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Historial actualizado.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (DbUpdateException)
+        {
+            TempData["Error"] = "No se pudo guardar el historial.";
+            return View(item);
+        }
     }
 
     public async Task<IActionResult> Delete(int? id)
@@ -100,8 +118,15 @@ public class HistorialCitaController : Controller
         if (item is null) return RedirectToAction(nameof(Index));
 
         _context.HistorialCitas.Remove(item);
-        await _context.SaveChangesAsync();
-        TempData["Success"] = "Historial eliminado.";
+        try
+        {
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Historial eliminado.";
+        }
+        catch (DbUpdateException)
+        {
+            TempData["Error"] = "No se pudo eliminar el historial.";
+        }
         return RedirectToAction(nameof(Index));
     }
 
@@ -127,4 +152,3 @@ public class HistorialCitaController : Controller
         ViewBag.Estados = new SelectList(estados, nameof(EstadoCita.IdEstadoCita), nameof(EstadoCita.Nombre), selectedEstado);
     }
 }
-

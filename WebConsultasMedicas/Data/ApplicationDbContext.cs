@@ -95,6 +95,7 @@ namespace WebConsultasMedicas.Data
             {
                 entity.ToTable("Medico");
                 entity.HasKey(e => e.IdMedico).HasName("PK_Medico");
+                entity.Property(e => e.IdUsuario);
                 entity.Property(e => e.IdEspecialidad).IsRequired();
                 entity.Property(e => e.CMP).HasMaxLength(20).IsUnicode(false).IsRequired();
                 entity.Property(e => e.Nombres).HasMaxLength(100).IsUnicode(false).IsRequired();
@@ -105,11 +106,18 @@ namespace WebConsultasMedicas.Data
                 entity.Property(e => e.Estado).HasDefaultValue(true);
                 entity.HasIndex(e => e.CMP).IsUnique().HasDatabaseName("UQ_Medico_CMP");
                 entity.HasIndex(e => e.IdEspecialidad).HasDatabaseName("IX_Medico_IdEspecialidad");
+                entity.HasIndex(e => e.IdUsuario).IsUnique().HasDatabaseName("UQ_Medico_IdUsuario").HasFilter("[IdUsuario] IS NOT NULL");
 
                 entity.HasOne(e => e.Especialidad)
                     .WithMany(es => es.Medicos)
                     .HasForeignKey(e => e.IdEspecialidad)
                     .HasConstraintName("FK_Medico_Especialidad")
+                    .OnDelete(DeleteBehavior.NoAction);
+
+                entity.HasOne(e => e.Usuario)
+                    .WithOne(u => u.Medico)
+                    .HasForeignKey<Medico>(e => e.IdUsuario)
+                    .HasConstraintName("FK_Medico_Usuario")
                     .OnDelete(DeleteBehavior.NoAction);
             });
 
@@ -127,18 +135,17 @@ namespace WebConsultasMedicas.Data
             {
                 entity.ToTable("HorarioMedico", tb =>
                 {
-                    tb.HasCheckConstraint("CK_HorarioMedico_DiaSemana", "[DiaSemana] BETWEEN 1 AND 7");
-                    tb.HasCheckConstraint("CK_HorarioMedico_Cupos", "[Cupos] > 0");
+                    // Fecha específica (no se usa DiaSemana porque varía semana a semana)
                 });
                 entity.HasKey(e => e.IdHorarioMedico).HasName("PK_HorarioMedico");
-                entity.Property(e => e.DiaSemana).HasColumnType("tinyint").IsRequired();
+                entity.Property(e => e.Fecha).HasColumnType("date").IsRequired();
                 entity.Property(e => e.HoraInicio).HasColumnType("time").IsRequired();
                 entity.Property(e => e.HoraFin).HasColumnType("time").IsRequired();
-                entity.Property(e => e.Cupos).HasDefaultValue(10);
                 entity.Property(e => e.Estado).HasDefaultValue(true);
 
                 entity.HasIndex(e => e.IdMedico).HasDatabaseName("IX_HorarioMedico_IdMedico");
                 entity.HasIndex(e => e.IdEspecialidad).HasDatabaseName("IX_HorarioMedico_IdEspecialidad");
+                entity.HasIndex(e => e.Fecha).HasDatabaseName("IX_HorarioMedico_Fecha");
 
                 entity.HasOne(e => e.Medico)
                     .WithMany(m => m.Horarios)
@@ -245,7 +252,8 @@ namespace WebConsultasMedicas.Data
 
             modelBuilder.Entity<Rol>().HasData(
                 new Rol { IdRol = 1, Nombre = "Administrador", Estado = true },
-                new Rol { IdRol = 2, Nombre = "Paciente", Estado = true }
+                new Rol { IdRol = 2, Nombre = "Paciente", Estado = true },
+                new Rol { IdRol = 3, Nombre = "Medico", Estado = true }
             );
 
             modelBuilder.Entity<Usuario>().HasData(

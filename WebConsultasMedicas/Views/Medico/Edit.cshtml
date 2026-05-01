@@ -1,4 +1,4 @@
-@model WebConsultasMedicas.Models.Medico
+@model WebConsultasMedicas.Models.MedicoAdminViewModel
 
 @{
     ViewData["Title"] = "Editar médico";
@@ -9,6 +9,9 @@
         <form asp-action="Edit" method="post" class="row g-3">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="IdMedico" />
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
 
             <div class="col-md-6">
                 <label asp-for="IdEspecialidad" class="form-label">Especialidad</label>
@@ -16,6 +19,15 @@
                 <span asp-validation-for="IdEspecialidad" class="text-danger"></span>
             </div>
             <div class="col-md-6"></div>
+
+            <div class="col-md-6">
+                <label asp-for="Correo" class="form-label">Correo (usuario médico)</label>
+                <input asp-for="Correo" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <div class="form-text pt-4">La contraseña se cambia desde <strong>Usuarios</strong>.</div>
+            </div>
 
             <div class="col-md-4">
                 <label asp-for="CMP" class="form-label"></label>
@@ -45,11 +57,6 @@
                 <input asp-for="Telefono" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Telefono" class="text-danger"></span>
             </div>
-            <div class="col-md-6">
-                <label asp-for="Correo" class="form-label"></label>
-                <input asp-for="Correo" class="form-control" autocomplete="off" />
-                <span asp-validation-for="Correo" class="text-danger"></span>
-            </div>
 
             <div class="col-12">
                 <div class="form-check">
@@ -69,3 +76,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+

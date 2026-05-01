@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using WebConsultasMedicas.Data;
 using WebConsultasMedicas.Models;
 using WebConsultasMedicas.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebConsultasMedicas.Controllers;
 
+[Authorize(Roles = "Administrador")]
 public class UsuarioController : Controller
 {
     private readonly ApplicationDbContext _context;
@@ -173,4 +175,3 @@ public class UsuarioController : Controller
         ViewBag.Roles = new SelectList(roles, nameof(Rol.IdRol), nameof(Rol.Nombre), selectedId);
     }
 }
-

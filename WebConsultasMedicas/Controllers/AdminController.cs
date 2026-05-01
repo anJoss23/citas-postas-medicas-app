@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebConsultasMedicas.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class AdminController : Controller
     {
         public IActionResult Inicio()
