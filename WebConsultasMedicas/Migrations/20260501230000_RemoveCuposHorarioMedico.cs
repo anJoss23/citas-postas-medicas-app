@@ -38,7 +38,8 @@ BEGIN
 
     IF @dfName IS NOT NULL
     BEGIN
-        EXEC('ALTER TABLE dbo.HorarioMedico DROP CONSTRAINT ' + QUOTENAME(@dfName));
+        DECLARE @sql NVARCHAR(MAX) = N'ALTER TABLE dbo.HorarioMedico DROP CONSTRAINT [' + @dfName + N'];';
+        EXEC(@sql);
     END
 
     ALTER TABLE dbo.HorarioMedico DROP COLUMN Cupos;
