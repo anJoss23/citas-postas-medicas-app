@@ -6,6 +6,7 @@
 
 <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
     <p class="text-muted mb-0">Mantenimiento de pacientes.</p>
+    <a class="btn btn-primary" asp-action="Create">Nuevo</a>
 </div>
 
 <div class="card shadow-sm">
@@ -16,7 +17,7 @@
                     <th style="width: 90px;">ID</th>
                     <th>DNI</th>
                     <th>Paciente</th>
-                    <th>SIS</th>
+                    <th>HCL</th>
                     <th>Usuario</th>
                     <th style="width: 110px;">Estado</th>
                     <th style="width: 180px;" class="text-end">Acciones</th>
@@ -50,6 +51,7 @@
                                 }
                             </td>
                             <td class="text-end">
+                                <a class="btn btn-sm btn-outline-secondary" asp-action="Edit" asp-route-id="@item.IdPaciente">Editar</a>
                                 <form asp-action="ToggleEstado" method="post" class="d-inline">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="idPaciente" value="@item.IdPaciente" />

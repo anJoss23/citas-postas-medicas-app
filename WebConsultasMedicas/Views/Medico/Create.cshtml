@@ -21,7 +21,10 @@
 
             <div class="col-md-6">
                 <label asp-for="Correo" class="form-label">Correo (usuario médico)</label>
-                <input asp-for="Correo" class="form-control" autocomplete="off" />
+                <div class="input-group">
+                    <input asp-for="Correo" class="form-control" autocomplete="off" placeholder="usuario" />
+                    <span class="input-group-text">@@siscitasweb.local</span>
+                </div>
                 <span asp-validation-for="Correo" class="text-danger"></span>
                 <div class="form-text">Se crea automáticamente un usuario con rol Medico.</div>
             </div>
@@ -80,4 +83,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

@@ -2,16 +2,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebConsultasMedicas.Models;
 
-public class PatientRegisterViewModel
+public class AdminPacienteEditViewModel
 {
+    public int IdPaciente { get; set; }
+
     [Required(ErrorMessage = "El correo es obligatorio.")]
     [EmailAddress(ErrorMessage = "Correo inválido.")]
     [StringLength(100)]
     public string Correo { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "La contraseña es obligatoria.")]
-    [StringLength(100, MinimumLength = 6, ErrorMessage = "La contraseña debe tener mínimo 6 caracteres.")]
-    public string Password { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "El DNI es obligatorio.")]
     [StringLength(8, MinimumLength = 8, ErrorMessage = "El DNI debe tener 8 dígitos.")]
@@ -41,5 +39,9 @@ public class PatientRegisterViewModel
 
     [StringLength(200)]
     public string? Direccion { get; set; }
+
+    public bool Estado { get; set; } = true;
+
+    public string NumeroHistoriaClinica { get; set; } = string.Empty;
 }
 

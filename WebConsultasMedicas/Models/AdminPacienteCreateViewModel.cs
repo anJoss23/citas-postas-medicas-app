@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebConsultasMedicas.Models;
 
-public class PatientRegisterViewModel
+public class AdminPacienteCreateViewModel
 {
     [Required(ErrorMessage = "El correo es obligatorio.")]
     [EmailAddress(ErrorMessage = "Correo inválido.")]
@@ -30,7 +30,7 @@ public class PatientRegisterViewModel
     public string ApellidoMaterno { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "La fecha de nacimiento es obligatoria.")]
-    public DateOnly FechaNacimiento { get; set; }
+    public DateOnly FechaNacimiento { get; set; } = DateOnly.FromDateTime(DateTime.Today.AddYears(-18));
 
     [Required(ErrorMessage = "El sexo es obligatorio.")]
     [RegularExpression("^[MF]$", ErrorMessage = "Sexo inválido (M/F).")]
@@ -41,5 +41,7 @@ public class PatientRegisterViewModel
 
     [StringLength(200)]
     public string? Direccion { get; set; }
+
+    public bool Estado { get; set; } = true;
 }
 

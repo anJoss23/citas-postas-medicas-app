@@ -57,7 +57,13 @@ public class MedicoController : Controller
             return View(model);
         }
 
-        var email = model.Correo.Trim().ToLowerInvariant();
+        var email = model.Correo.Trim();
+        if (!email.Contains('@'))
+        {
+            email = $"{email}@siscitasweb.local";
+        }
+        email = email.ToLowerInvariant();
+
         if (await _context.Usuarios.AnyAsync(u => u.Correo.ToLower() == email))
         {
             ModelState.AddModelError(nameof(MedicoAdminViewModel.Correo), "El correo ya está registrado.");
@@ -113,7 +119,6 @@ public class MedicoController : Controller
     public async Task<IActionResult> Edit(int? id)
     {
         if (id is null) return NotFound();
-
         var medico = await _context.Medicos
             .Include(m => m.Usuario)
             .AsNoTracking()
@@ -142,22 +147,26 @@ public class MedicoController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id, MedicoAdminViewModel model)
     {
-        var medico = await _context.Medicos
-            .Include(m => m.Usuario)
-            .FirstOrDefaultAsync(m => m.IdMedico == id);
-
-        if (medico is null) return NotFound();
+        if (id != model.IdMedico) return NotFound();
 
         ViewData["Title"] = "Editar médico";
         await LoadEspecialidadesAsync(model.IdEspecialidad);
 
         if (!ModelState.IsValid)
         {
-            model.IdMedico = id;
             return View(model);
         }
 
-        var email = model.Correo.Trim().ToLowerInvariant();
+        var medico = await _context.Medicos.Include(m => m.Usuario).FirstOrDefaultAsync(m => m.IdMedico == id);
+        if (medico is null) return NotFound();
+
+        var email = model.Correo.Trim();
+        if (!email.Contains('@'))
+        {
+            email = $"{email}@siscitasweb.local";
+        }
+        email = email.ToLowerInvariant();
+
         var existsOtherUser = await _context.Usuarios.AnyAsync(u => u.Correo.ToLower() == email && u.IdUsuario != medico.IdUsuario);
         if (existsOtherUser)
         {
@@ -195,24 +204,25 @@ public class MedicoController : Controller
     public async Task<IActionResult> Delete(int? id)
     {
         if (id is null) return NotFound();
-        var medico = await _context.Medicos
+        var item = await _context.Medicos
             .Include(m => m.Especialidad)
-            .Include(m => m.Usuario)
             .AsNoTracking()
             .FirstOrDefaultAsync(m => m.IdMedico == id.Value);
-        if (medico is null) return NotFound();
+
+        if (item is null) return NotFound();
+
         ViewData["Title"] = "Eliminar médico";
-        return View(medico);
+        return View(item);
     }
 
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var medico = await _context.Medicos.FindAsync(id);
-        if (medico is null) return RedirectToAction(nameof(Index));
+        var item = await _context.Medicos.FindAsync(id);
+        if (item is null) return RedirectToAction(nameof(Index));
 
-        _context.Medicos.Remove(medico);
+        _context.Medicos.Remove(item);
         try
         {
             await _context.SaveChangesAsync();
@@ -220,19 +230,20 @@ public class MedicoController : Controller
         }
         catch (DbUpdateException)
         {
-            TempData["Error"] = "No se pudo eliminar. Puede estar relacionado a horarios o citas.";
+            TempData["Error"] = "No se pudo eliminar. Puede estar relacionado a citas/horarios.";
         }
 
         return RedirectToAction(nameof(Index));
     }
 
-    private async Task LoadEspecialidadesAsync(int? selectedId = null)
+    private async Task LoadEspecialidadesAsync(int? selected = null)
     {
-        var items = await _context.Especialidades.AsNoTracking()
+        var especialidades = await _context.Especialidades.AsNoTracking()
             .Where(e => e.Estado)
             .OrderBy(e => e.Nombre)
             .ToListAsync();
-        ViewBag.Especialidades = new SelectList(items, nameof(Especialidad.IdEspecialidad), nameof(Especialidad.Nombre), selectedId);
+
+        ViewBag.Especialidades = new SelectList(especialidades, nameof(Especialidad.IdEspecialidad), nameof(Especialidad.Nombre), selected);
     }
 }
 

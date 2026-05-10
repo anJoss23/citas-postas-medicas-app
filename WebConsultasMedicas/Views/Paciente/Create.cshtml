@@ -1,4 +1,4 @@
-@model WebConsultasMedicas.Models.Paciente
+@model WebConsultasMedicas.Models.AdminPacienteCreateViewModel
 
 @{
     ViewData["Title"] = "Nuevo paciente";
@@ -8,67 +8,72 @@
     <div class="card-body">
         <form asp-action="Create" method="post" class="row g-3">
             @Html.AntiForgeryToken()
+
             <div class="col-12">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             </div>
 
             <div class="col-md-6">
-                <label asp-for="IdUsuario" class="form-label">Usuario</label>
-                <select asp-for="IdUsuario" class="form-select" asp-items="ViewBag.Usuarios"></select>
-                <span asp-validation-for="IdUsuario" class="text-danger"></span>
+                <label asp-for="Correo" class="form-label">Correo</label>
+                <div class="input-group">
+                    <input asp-for="Correo" class="form-control" autocomplete="off" placeholder="usuario" />
+                    <span class="input-group-text">@@siscitasweb.local</span>
+                </div>
+                <span asp-validation-for="Correo" class="text-danger"></span>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-6">
+                <label asp-for="Password" class="form-label">Contraseña</label>
+                <input asp-for="Password" class="form-control" type="password" autocomplete="new-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
                 <label asp-for="DNI" class="form-label"></label>
                 <input asp-for="DNI" class="form-control" autocomplete="off" />
                 <span asp-validation-for="DNI" class="text-danger"></span>
             </div>
 
-            <div class="col-md-3">
-                <label asp-for="NumeroSIS" class="form-label">Número SIS</label>
-                <input asp-for="NumeroSIS" class="form-control" autocomplete="off" />
-                <span asp-validation-for="NumeroSIS" class="text-danger"></span>
-            </div>
-
             <div class="col-md-4">
-                <label asp-for="ApellidoPaterno" class="form-label"></label>
-                <input asp-for="ApellidoPaterno" class="form-control" autocomplete="off" />
-                <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
-            </div>
-            <div class="col-md-4">
-                <label asp-for="ApellidoMaterno" class="form-label"></label>
-                <input asp-for="ApellidoMaterno" class="form-control" autocomplete="off" />
-                <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
-            </div>
-            <div class="col-md-4">
-                <label asp-for="Nombres" class="form-label"></label>
-                <input asp-for="Nombres" class="form-control" autocomplete="off" />
-                <span asp-validation-for="Nombres" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-3">
                 <label asp-for="FechaNacimiento" class="form-label">Fecha nacimiento</label>
-                <input asp-for="FechaNacimiento" class="form-control" type="date" />
+                <input asp-for="FechaNacimiento" asp-format="{0:yyyy-MM-dd}" class="form-control" type="date" />
                 <span asp-validation-for="FechaNacimiento" class="text-danger"></span>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label asp-for="Sexo" class="form-label"></label>
                 <select asp-for="Sexo" class="form-select">
-                    <option value="">-- Selecciona --</option>
                     <option value="M">M</option>
                     <option value="F">F</option>
                 </select>
                 <span asp-validation-for="Sexo" class="text-danger"></span>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-4">
+                <label asp-for="ApellidoPaterno" class="form-label">Apellido paterno</label>
+                <input asp-for="ApellidoPaterno" class="form-control" autocomplete="off" />
+                <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="ApellidoMaterno" class="form-label">Apellido materno</label>
+                <input asp-for="ApellidoMaterno" class="form-control" autocomplete="off" />
+                <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
+                <label asp-for="Nombres" class="form-label"></label>
+                <input asp-for="Nombres" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Nombres" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4">
                 <label asp-for="Telefono" class="form-label"></label>
                 <input asp-for="Telefono" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Telefono" class="text-danger"></span>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-8">
                 <label asp-for="Direccion" class="form-label"></label>
                 <input asp-for="Direccion" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Direccion" class="text-danger"></span>
@@ -79,6 +84,7 @@
                     <input asp-for="Estado" class="form-check-input" />
                     <label asp-for="Estado" class="form-check-label">Activo</label>
                 </div>
+                <div class="form-text">La historia clínica (HCLIN#####) se genera automáticamente.</div>
             </div>
 
             <div class="col-12 d-flex gap-2">

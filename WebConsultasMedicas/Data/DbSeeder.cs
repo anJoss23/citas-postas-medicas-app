@@ -62,14 +62,14 @@ public static class DbSeeder
         if (!await context.Pacientes.AnyAsync(p => p.IdUsuario == pacienteUserId))
         {
             var dni = "70000001";
-            var sis = "SIS70000001";
+            var sis = "HCLIN00001";
             if (await context.Pacientes.AnyAsync(p => p.DNI == dni))
             {
                 dni = DateTime.Now.ToString("HHmmssff").PadLeft(8, '0')[..8];
             }
             if (await context.Pacientes.AnyAsync(p => p.NumeroSIS == sis))
             {
-                sis = $"SIS{DateTime.Now:HHmmssff}";
+                sis = await NumeroHistoriaClinicaGenerator.NextAsync(context);
             }
 
             context.Pacientes.Add(new Paciente
