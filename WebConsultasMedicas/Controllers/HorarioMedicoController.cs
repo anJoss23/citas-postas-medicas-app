@@ -52,7 +52,19 @@ public class HorarioMedicoController : Controller
             .FirstOrDefaultAsync();
 
         ModelState.Remove(nameof(HorarioMedico.IdEspecialidad));
-        if (!ModelState.IsValid) return View(item);
+        ModelState.Remove(nameof(HorarioMedico.Medico));
+        ModelState.Remove(nameof(HorarioMedico.Especialidad));
+        ModelState.Remove(nameof(HorarioMedico.Turno));
+        if (!ModelState.IsValid)
+        {
+            var details = string.Join(" | ",
+                ModelState
+                    .Where(kv => kv.Value?.Errors.Count > 0)
+                    .SelectMany(kv => kv.Value!.Errors.Select(e => $"{kv.Key}: {e.ErrorMessage}"))
+            );
+            TempData["Error"] = string.IsNullOrWhiteSpace(details) ? "Formulario inválido." : details;
+            return View(item);
+        }
 
         if (item.HoraFin <= item.HoraInicio)
         {
@@ -88,15 +100,32 @@ public class HorarioMedicoController : Controller
             start = end;
         }
 
-        var starts = slots.Select(s => s.HoraInicio).ToList();
-        var existingStarts = await _context.HorariosMedicos.AsNoTracking()
-            .Where(h => h.IdMedico == item.IdMedico && h.Fecha == item.Fecha && starts.Contains(h.HoraInicio))
+        // Consulta simple (sin IN/OPENJSON): trae horas del día y filtra en memoria.
+        var existingAllStarts = await _context.HorariosMedicos.AsNoTracking()
+            .Where(h => h.IdMedico == item.IdMedico && h.Fecha == item.Fecha)
             .Select(h => h.HoraInicio)
             .ToListAsync();
+
+        var slotStarts = slots.Select(s => s.HoraInicio).ToHashSet();
+        var existingStarts = existingAllStarts
+            .Where(t => slotStarts.Contains(t))
+            .ToList();
 
         if (existingStarts.Count > 0)
         {
             TempData["Error"] = $"Ya existen horarios para esas horas: {string.Join(", ", existingStarts.Select(t => t.ToString("HH:mm")))}.";
+            return View(item);
+        }
+
+        if (slots.Count == 0)
+        {
+            TempData["Error"] = "No se generaron bloques. Verifica que el rango sea por horas completas.";
+            return View(item);
+        }
+
+        if (item.IdEspecialidad <= 0)
+        {
+            TempData["Error"] = "No se pudo obtener la especialidad del médico seleccionado.";
             return View(item);
         }
 
@@ -140,7 +169,19 @@ public class HorarioMedicoController : Controller
             .FirstOrDefaultAsync();
 
         ModelState.Remove(nameof(HorarioMedico.IdEspecialidad));
-        if (!ModelState.IsValid) return View(item);
+        ModelState.Remove(nameof(HorarioMedico.Medico));
+        ModelState.Remove(nameof(HorarioMedico.Especialidad));
+        ModelState.Remove(nameof(HorarioMedico.Turno));
+        if (!ModelState.IsValid)
+        {
+            var details = string.Join(" | ",
+                ModelState
+                    .Where(kv => kv.Value?.Errors.Count > 0)
+                    .SelectMany(kv => kv.Value!.Errors.Select(e => $"{kv.Key}: {e.ErrorMessage}"))
+            );
+            TempData["Error"] = string.IsNullOrWhiteSpace(details) ? "Formulario inválido." : details;
+            return View(item);
+        }
 
         if (item.HoraFin <= item.HoraInicio)
         {

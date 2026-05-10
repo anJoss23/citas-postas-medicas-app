@@ -1,0 +1,47 @@
+@model WebConsultasMedicas.Models.PacienteCambiarClaveViewModel
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="mb-3">
+            <div class="text-muted small">Paciente</div>
+            <div class="fw-semibold">@Model.Paciente</div>
+            @if (!string.IsNullOrWhiteSpace(Model.Correo))
+            {
+                <div class="text-muted small">@Model.Correo</div>
+            }
+        </div>
+
+        <form asp-action="CambiarClave" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="IdPaciente" />
+            <input type="hidden" asp-for="Paciente" />
+            <input type="hidden" asp-for="Correo" />
+
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="NuevaClave" class="form-label">Nueva contraseña</label>
+                <input asp-for="NuevaClave" class="form-control" type="password" autocomplete="new-password" />
+                <span asp-validation-for="NuevaClave" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6">
+                <label asp-for="ConfirmarClave" class="form-label">Confirmar contraseña</label>
+                <input asp-for="ConfirmarClave" class="form-control" type="password" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmarClave" class="text-danger"></span>
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

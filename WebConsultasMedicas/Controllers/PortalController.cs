@@ -20,7 +20,7 @@ public class PortalController : Controller
 
     public async Task<IActionResult> Buscar(int? idEspecialidad, string? medico)
     {
-        ViewData["Title"] = "Buscar médicos";
+        ViewData["Title"] = "Agendar cita";
 
         var especialidades = await _context.Especialidades.AsNoTracking()
             .Where(e => e.Estado)

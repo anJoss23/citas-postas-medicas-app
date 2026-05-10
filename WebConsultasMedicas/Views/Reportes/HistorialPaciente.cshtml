@@ -1,0 +1,85 @@
+@model WebConsultasMedicas.Models.Reportes.HistorialPacienteViewModel
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-12 col-md-10">
+                <label class="form-label" for="IdPaciente">Paciente</label>
+                <select class="form-select" id="IdPaciente" name="idPaciente" asp-items="Model.Pacientes">
+                    <option value="">-- Seleccione --</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Ver</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="text-muted small">
+        @if (Model.IdPaciente is null)
+        {
+            <span>Seleccione un paciente para ver su historial.</span>
+        }
+        else
+        {
+            <span>Mostrando @Model.Rows.Count registro(s).</span>
+        }
+    </div>
+
+    @if (Model.IdPaciente is not null)
+    {
+        <a class="btn btn-outline-success btn-sm"
+           asp-action="HistorialPacienteExcel"
+           asp-route-idPaciente="@Model.IdPaciente.Value">
+            Exportar a Excel
+        </a>
+    }
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>IdCita</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Especialidad</th>
+                    <th>Médico</th>
+                    <th>Fecha cambio</th>
+                    <th>Estado</th>
+                    <th>Observación</th>
+                    <th>Usuario acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Rows.Count == 0)
+                {
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">Sin resultados.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td>@row.IdCita</td>
+                            <td>@row.FechaCita.ToString("yyyy-MM-dd")</td>
+                            <td>@row.HoraCita.ToString("HH:mm")</td>
+                            <td>@row.Especialidad</td>
+                            <td>@row.Medico</td>
+                            <td>@row.FechaCambio.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>@row.Estado</td>
+                            <td class="text-truncate" style="max-width: 360px;">@row.Observacion</td>
+                            <td>@row.UsuarioAccion</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

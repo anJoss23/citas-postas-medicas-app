@@ -29,19 +29,19 @@
 
             <div class="col-md-4">
                 <label asp-for="Fecha" class="form-label">Fecha</label>
-                <input asp-for="Fecha" class="form-control" type="date" />
+                <input asp-for="Fecha" asp-format="{0:yyyy-MM-dd}" class="form-control" type="date" />
                 <span asp-validation-for="Fecha" class="text-danger"></span>
             </div>
 
             <div class="col-md-2">
                 <label asp-for="HoraInicio" class="form-label">Hora inicio</label>
-                <input asp-for="HoraInicio" class="form-control" type="time" />
+                <input asp-for="HoraInicio" asp-format="{0:HH\\:mm}" class="form-control" type="time" />
                 <span asp-validation-for="HoraInicio" class="text-danger"></span>
             </div>
 
             <div class="col-md-2">
                 <label asp-for="HoraFin" class="form-label">Hora fin</label>
-                <input asp-for="HoraFin" class="form-control" type="time" />
+                <input asp-for="HoraFin" asp-format="{0:HH\\:mm}" class="form-control" type="time" />
                 <span asp-validation-for="HoraFin" class="text-danger"></span>
             </div>
 
@@ -69,4 +69,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

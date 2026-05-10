@@ -23,6 +23,16 @@ namespace WebConsultasMedicas.Controllers
         {
             if (User.Identity?.IsAuthenticated == true)
             {
+                if (User.IsInRole("Paciente"))
+                {
+                    return RedirectToAction("Buscar", "Portal");
+                }
+
+                if (User.IsInRole("Medico"))
+                {
+                    return RedirectToAction("MisCitas", "MedicoPortal");
+                }
+
                 return RedirectToAction("Inicio", "Admin");
             }
             return View();

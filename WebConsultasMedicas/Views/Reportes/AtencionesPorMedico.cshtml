@@ -1,0 +1,81 @@
+@model WebConsultasMedicas.Models.Reportes.AtencionesPorMedicoFilterViewModel
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-12 col-md-5">
+                <label class="form-label" for="IdEspecialidad">Especialidad</label>
+                <select class="form-select" id="IdEspecialidad" name="idEspecialidad" asp-items="Model.Especialidades">
+                    <option value="">-- Todas --</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-5">
+                <label class="form-label" for="IdMedico">Médico</label>
+                <select class="form-select" id="IdMedico" name="idMedico" asp-items="Model.Medicos">
+                    <option value="">-- Todos --</option>
+                </select>
+            </div>
+            <div class="col-12 col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="text-muted small">
+        Mostrando @Model.Rows.Count registro(s). (Solo estado <strong>Atendida</strong>)
+    </div>
+    <a class="btn btn-outline-success btn-sm"
+       asp-action="AtencionesPorMedicoExcel"
+       asp-route-idEspecialidad="@Model.IdEspecialidad"
+       asp-route-idMedico="@Model.IdMedico">
+        Exportar a Excel
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-sm table-striped align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Especialidad</th>
+                    <th>Médico</th>
+                    <th>Paciente</th>
+                    <th>Estado</th>
+                    <th>Último cambio</th>
+                    <th>Última observación</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Rows.Count == 0)
+                {
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-4">Sin resultados.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var row in Model.Rows)
+                    {
+                        <tr>
+                            <td>@row.IdCita</td>
+                            <td>@row.FechaCita.ToString("yyyy-MM-dd")</td>
+                            <td>@row.HoraCita.ToString("HH:mm")</td>
+                            <td>@row.Especialidad</td>
+                            <td>@row.Medico</td>
+                            <td>@row.Paciente</td>
+                            <td>@row.Estado</td>
+                            <td>@(row.UltimoCambio?.ToString("yyyy-MM-dd HH:mm") ?? "")</td>
+                            <td class="text-truncate" style="max-width: 360px;">@row.UltimaObservacion</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

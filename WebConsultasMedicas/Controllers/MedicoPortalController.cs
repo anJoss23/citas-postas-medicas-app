@@ -72,11 +72,29 @@ public class MedicoPortalController : Controller
         if (cita is null) return NotFound();
 
         var estados = await _context.EstadosCita.AsNoTracking().OrderBy(e => e.IdEstadoCita).ToListAsync();
+
+        DateTime? fechaAtencion = null;
+        string? observacionAtencion = null;
+        var isReadOnly = cita.IdEstadoCita == 2; // Atendida
+        if (isReadOnly)
+        {
+            var last = await _context.HistorialCitas.AsNoTracking()
+                .Where(h => h.IdCita == cita.IdCita)
+                .OrderByDescending(h => h.FechaCambio)
+                .Select(h => new { h.FechaCambio, h.Observacion })
+                .FirstOrDefaultAsync();
+            fechaAtencion = last?.FechaCambio;
+            observacionAtencion = last?.Observacion;
+        }
+
         var model = new MedicoIndicacionViewModel
         {
             IdCita = cita.IdCita,
             Cita = cita,
             IdEstadoCita = cita.IdEstadoCita,
+            IsReadOnly = isReadOnly,
+            FechaAtencion = fechaAtencion,
+            Observacion = observacionAtencion,
             Estados = new SelectList(estados, nameof(EstadoCita.IdEstadoCita), nameof(EstadoCita.Nombre), cita.IdEstadoCita)
         };
 
@@ -101,6 +119,12 @@ public class MedicoPortalController : Controller
 
         var estados = await _context.EstadosCita.AsNoTracking().OrderBy(e => e.IdEstadoCita).ToListAsync();
         model.Estados = new SelectList(estados, nameof(EstadoCita.IdEstadoCita), nameof(EstadoCita.Nombre), model.IdEstadoCita);
+
+        if (cita.IdEstadoCita == 2)
+        {
+            TempData["Error"] = "Esta cita ya fue atendida y no puede modificarse.";
+            return RedirectToAction(nameof(Atender), new { id = cita.IdCita });
+        }
 
         if (!ModelState.IsValid)
         {
@@ -127,7 +151,7 @@ public class MedicoPortalController : Controller
         try
         {
             await _context.SaveChangesAsync();
-            TempData["Success"] = "Indicaciones/estado guardados.";
+            TempData["Success"] = model.IdEstadoCita == 2 ? "Cita atendida y cerrada." : "Indicaciones/estado guardados.";
             return RedirectToAction(nameof(MisCitas));
         }
         catch (DbUpdateException)
