@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using WebConsultasMedicas.Data;
+using WebConsultasMedicas.Hubs;
 using WebConsultasMedicas.Models;
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebConsultasMedicas.Controllers;
 
@@ -12,10 +14,12 @@ namespace WebConsultasMedicas.Controllers;
 public class MedicoPortalController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly IHubContext<CitasHub> _hub;
 
-    public MedicoPortalController(ApplicationDbContext context)
+    public MedicoPortalController(ApplicationDbContext context, IHubContext<CitasHub> hub)
     {
         _context = context;
+        _hub = hub;
     }
 
     public async Task<IActionResult> MisCitas()
@@ -47,7 +51,50 @@ public class MedicoPortalController : Controller
             .ToListAsync();
 
         ViewBag.IdMedico = idMedico;
+
+        // Token simple para detectar cambios (fallback al realtime si SignalR no conecta).
+        var token = await _context.CitasMedicas.AsNoTracking()
+            .Where(c => c.IdMedico == idMedico)
+            .Select(c => (DateTime?)c.FechaRegistro)
+            .MaxAsync();
+
+        var tokenHist = await _context.HistorialCitas.AsNoTracking()
+            .Where(h => h.CitaMedica.IdMedico == idMedico)
+            .Select(h => (DateTime?)h.FechaCambio)
+            .MaxAsync();
+
+        var last = token is null ? tokenHist : tokenHist is null ? token : (token > tokenHist ? token : tokenHist);
+        ViewBag.UpdateToken = (last ?? DateTime.MinValue).ToString("O");
+
         return View(items);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> UpdateToken()
+    {
+        var idUsuario = GetUsuarioId();
+        if (idUsuario is null) return Forbid();
+
+        var idMedico = await _context.Medicos.AsNoTracking()
+            .Where(m => m.IdUsuario == idUsuario.Value)
+            .Select(m => m.IdMedico)
+            .FirstOrDefaultAsync();
+
+        if (idMedico == 0) return Forbid();
+
+        var token = await _context.CitasMedicas.AsNoTracking()
+            .Where(c => c.IdMedico == idMedico)
+            .Select(c => (DateTime?)c.FechaRegistro)
+            .MaxAsync();
+
+        var tokenHist = await _context.HistorialCitas.AsNoTracking()
+            .Where(h => h.CitaMedica.IdMedico == idMedico)
+            .Select(h => (DateTime?)h.FechaCambio)
+            .MaxAsync();
+
+        var last = token is null ? tokenHist : tokenHist is null ? token : (token > tokenHist ? token : tokenHist);
+        var value = (last ?? DateTime.MinValue).ToString("O");
+        return Json(new { token = value });
     }
 
     public async Task<IActionResult> Atender(int? id)
@@ -151,6 +198,7 @@ public class MedicoPortalController : Controller
         try
         {
             await _context.SaveChangesAsync();
+            await _hub.Clients.Group(CitasHub.GroupForMedico(cita.IdMedico)).SendAsync("citasUpdated");
             TempData["Success"] = model.IdEstadoCita == 2 ? "Cita atendida y cerrada." : "Indicaciones/estado guardados.";
             return RedirectToAction(nameof(MisCitas));
         }

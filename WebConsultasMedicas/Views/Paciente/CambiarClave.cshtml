@@ -22,14 +22,24 @@
             </div>
 
             <div class="col-md-6">
-                <label asp-for="NuevaClave" class="form-label">Nueva contraseña</label>
-                <input asp-for="NuevaClave" class="form-control" type="password" autocomplete="new-password" />
+                <label asp-for="NuevaClave" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="NuevaClave" class="form-control js-password" type="password" autocomplete="new-password" />
+                    <button type="button" class="btn btn-outline-secondary js-toggle-password" aria-label="Mostrar contraseña">
+                        <span class="js-eye">Ver</span>
+                    </button>
+                </div>
                 <span asp-validation-for="NuevaClave" class="text-danger"></span>
             </div>
 
             <div class="col-md-6">
-                <label asp-for="ConfirmarClave" class="form-label">Confirmar contraseña</label>
-                <input asp-for="ConfirmarClave" class="form-control" type="password" autocomplete="new-password" />
+                <label asp-for="ConfirmarClave" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="ConfirmarClave" class="form-control js-password" type="password" autocomplete="new-password" />
+                    <button type="button" class="btn btn-outline-secondary js-toggle-password" aria-label="Mostrar contraseña">
+                        <span class="js-eye">Ver</span>
+                    </button>
+                </div>
                 <span asp-validation-for="ConfirmarClave" class="text-danger"></span>
             </div>
 
@@ -44,4 +54,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

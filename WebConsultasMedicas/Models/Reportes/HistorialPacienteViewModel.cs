@@ -5,6 +5,8 @@ namespace WebConsultasMedicas.Models.Reportes;
 public class HistorialPacienteViewModel
 {
     public int? IdPaciente { get; set; }
+    public DateOnly? FechaDesde { get; set; }
+    public DateOnly? FechaHasta { get; set; }
     public SelectList? Pacientes { get; set; }
 
     public IReadOnlyList<HistorialPacienteRow> Rows { get; set; } = Array.Empty<HistorialPacienteRow>();
@@ -24,4 +26,3 @@ public class HistorialPacienteRow
     public string? Observacion { get; set; }
     public string? UsuarioAccion { get; set; }
 }
-

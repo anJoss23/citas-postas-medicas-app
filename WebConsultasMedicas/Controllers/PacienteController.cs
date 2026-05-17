@@ -135,10 +135,18 @@ public class PacienteController : Controller
         if (paciente is null) return NotFound();
 
         ViewData["Title"] = "Editar paciente";
+
+        var correo = paciente.Usuario?.Correo ?? string.Empty;
+        if (correo.EndsWith("@siscitasweb.local", StringComparison.OrdinalIgnoreCase))
+        {
+            var at = correo.IndexOf('@');
+            if (at > 0) correo = correo.Substring(0, at);
+        }
+
         return View(new AdminPacienteEditViewModel
         {
             IdPaciente = paciente.IdPaciente,
-            Correo = paciente.Usuario?.Correo ?? string.Empty,
+            Correo = correo,
             DNI = paciente.DNI,
             Nombres = paciente.Nombres,
             ApellidoPaterno = paciente.ApellidoPaterno,

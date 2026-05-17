@@ -35,7 +35,7 @@ public class MedicoController : Controller
     {
         ViewData["Title"] = "Nuevo médico";
         await LoadEspecialidadesAsync();
-        return View(new MedicoAdminViewModel { Estado = true });
+        return View(new MedicoAdminViewModel { Estado = true, TiempoAtencionMin = 60 });
     }
 
     [HttpPost]
@@ -97,6 +97,7 @@ public class MedicoController : Controller
                 ApellidoMaterno = model.ApellidoMaterno.Trim(),
                 Telefono = string.IsNullOrWhiteSpace(model.Telefono) ? null : model.Telefono.Trim(),
                 Correo = email,
+                TiempoAtencionMin = model.TiempoAtencionMin,
                 Estado = model.Estado
             };
 
@@ -129,6 +130,13 @@ public class MedicoController : Controller
         ViewData["Title"] = "Editar médico";
         await LoadEspecialidadesAsync(medico.IdEspecialidad);
 
+        var correo = medico.Usuario?.Correo ?? medico.Correo ?? string.Empty;
+        if (correo.EndsWith("@siscitasweb.local", StringComparison.OrdinalIgnoreCase))
+        {
+            var at = correo.IndexOf('@');
+            if (at > 0) correo = correo.Substring(0, at);
+        }
+
         return View(new MedicoAdminViewModel
         {
             IdMedico = medico.IdMedico,
@@ -138,7 +146,8 @@ public class MedicoController : Controller
             ApellidoPaterno = medico.ApellidoPaterno,
             ApellidoMaterno = medico.ApellidoMaterno,
             Telefono = medico.Telefono,
-            Correo = medico.Usuario?.Correo ?? medico.Correo ?? string.Empty,
+            Correo = correo,
+            TiempoAtencionMin = medico.TiempoAtencionMin,
             Estado = medico.Estado
         });
     }
@@ -181,6 +190,7 @@ public class MedicoController : Controller
         medico.ApellidoMaterno = model.ApellidoMaterno.Trim();
         medico.Telefono = string.IsNullOrWhiteSpace(model.Telefono) ? null : model.Telefono.Trim();
         medico.Correo = email;
+        medico.TiempoAtencionMin = model.TiempoAtencionMin;
         medico.Estado = model.Estado;
 
         if (medico.Usuario is not null)
@@ -246,4 +256,3 @@ public class MedicoController : Controller
         ViewBag.Especialidades = new SelectList(especialidades, nameof(Especialidad.IdEspecialidad), nameof(Especialidad.Nombre), selected);
     }
 }
-

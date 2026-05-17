@@ -1,6 +1,7 @@
 namespace WebConsultasMedicas.Models;
 
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 public class HorarioMedico
@@ -27,12 +28,12 @@ public class HorarioMedico
 
     public bool Estado { get; set; } = true;
 
-    [ValidateNever]
-    public Medico Medico { get; set; } = null!;
-    [ValidateNever]
-    public Especialidad Especialidad { get; set; } = null!;
-    [ValidateNever]
-    public Turno Turno { get; set; } = null!;
-    [ValidateNever]
+    [BindNever, ValidateNever]
+    public Medico? Medico { get; set; }
+    [BindNever, ValidateNever]
+    public Especialidad? Especialidad { get; set; }
+    [BindNever, ValidateNever]
+    public Turno? Turno { get; set; }
+    [BindNever, ValidateNever]
     public ICollection<CitaMedica> Citas { get; set; } = new List<CitaMedica>();
 }

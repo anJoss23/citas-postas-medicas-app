@@ -3,13 +3,21 @@
 <div class="card shadow-sm mb-3">
     <div class="card-body">
         <form method="get" class="row g-3 align-items-end">
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-2">
+                <label class="form-label" for="FechaDesde">Desde</label>
+                <input class="form-control" id="FechaDesde" name="fechaDesde" type="date" value="@(Model.FechaDesde?.ToString("yyyy-MM-dd") ?? "")" />
+            </div>
+            <div class="col-12 col-md-2">
+                <label class="form-label" for="FechaHasta">Hasta</label>
+                <input class="form-control" id="FechaHasta" name="fechaHasta" type="date" value="@(Model.FechaHasta?.ToString("yyyy-MM-dd") ?? "")" />
+            </div>
+            <div class="col-12 col-md-4">
                 <label class="form-label" for="IdEspecialidad">Especialidad</label>
                 <select class="form-select" id="IdEspecialidad" name="idEspecialidad" asp-items="Model.Especialidades">
                     <option value="">-- Todas --</option>
                 </select>
             </div>
-            <div class="col-12 col-md-5">
+            <div class="col-12 col-md-2">
                 <label class="form-label" for="IdMedico">Médico</label>
                 <select class="form-select" id="IdMedico" name="idMedico" asp-items="Model.Medicos">
                     <option value="">-- Todos --</option>
@@ -29,7 +37,9 @@
     <a class="btn btn-outline-success btn-sm"
        asp-action="AtencionesPorMedicoExcel"
        asp-route-idEspecialidad="@Model.IdEspecialidad"
-       asp-route-idMedico="@Model.IdMedico">
+       asp-route-idMedico="@Model.IdMedico"
+       asp-route-fechaDesde="@Model.FechaDesde"
+       asp-route-fechaHasta="@Model.FechaHasta">
         Exportar a Excel
     </a>
 </div>
@@ -39,7 +49,6 @@
         <table class="table table-sm table-striped align-middle mb-0">
             <thead>
                 <tr>
-                    <th>Id</th>
                     <th>Fecha</th>
                     <th>Hora</th>
                     <th>Especialidad</th>
@@ -54,7 +63,7 @@
                 @if (Model.Rows.Count == 0)
                 {
                     <tr>
-                        <td colspan="9" class="text-center text-muted py-4">Sin resultados.</td>
+                        <td colspan="8" class="text-center text-muted py-4">Sin resultados.</td>
                     </tr>
                 }
                 else
@@ -62,7 +71,6 @@
                     foreach (var row in Model.Rows)
                     {
                         <tr>
-                            <td>@row.IdCita</td>
                             <td>@row.FechaCita.ToString("yyyy-MM-dd")</td>
                             <td>@row.HoraCita.ToString("HH:mm")</td>
                             <td>@row.Especialidad</td>

@@ -103,6 +103,7 @@ namespace WebConsultasMedicas.Data
                 entity.Property(e => e.ApellidoMaterno).HasMaxLength(100).IsUnicode(false).IsRequired();
                 entity.Property(e => e.Telefono).HasMaxLength(15).IsUnicode(false);
                 entity.Property(e => e.Correo).HasMaxLength(100).IsUnicode(false);
+                entity.Property(e => e.TiempoAtencionMin).HasDefaultValue(60).IsRequired();
                 entity.Property(e => e.Estado).HasDefaultValue(true);
                 entity.HasIndex(e => e.CMP).IsUnique().HasDatabaseName("UQ_Medico_CMP");
                 entity.HasIndex(e => e.IdEspecialidad).HasDatabaseName("IX_Medico_IdEspecialidad");

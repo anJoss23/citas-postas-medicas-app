@@ -22,7 +22,10 @@
 
             <div class="col-md-6">
                 <label asp-for="Correo" class="form-label">Correo (usuario médico)</label>
-                <input asp-for="Correo" class="form-control" autocomplete="off" />
+                <div class="input-group">
+                    <input asp-for="Correo" class="form-control" autocomplete="off" placeholder="usuario" />
+                    <span class="input-group-text">@@siscitasweb.local</span>
+                </div>
                 <span asp-validation-for="Correo" class="text-danger"></span>
             </div>
             <div class="col-md-6">
@@ -34,7 +37,13 @@
                 <input asp-for="CMP" class="form-control" autocomplete="off" />
                 <span asp-validation-for="CMP" class="text-danger"></span>
             </div>
-            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <label asp-for="TiempoAtencionMin" class="form-label"></label>
+                <input asp-for="TiempoAtencionMin" class="form-control" type="number" min="1" max="60" />
+                <span asp-validation-for="TiempoAtencionMin" class="text-danger"></span>
+                <div class="form-text">Máximo 60 minutos.</div>
+            </div>
+            <div class="col-md-4"></div>
 
             <div class="col-md-4">
                 <label asp-for="ApellidoPaterno" class="form-label"></label>
@@ -76,4 +85,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
-

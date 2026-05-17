@@ -23,8 +23,23 @@
                     </div>
                     <div class="col-md-6">
                         <label asp-for="Password" class="form-label">Contraseña</label>
-                        <input asp-for="Password" class="form-control" type="password" autocomplete="new-password" />
+                        <div class="input-group">
+                            <input asp-for="Password" class="form-control js-password" type="password" autocomplete="new-password" />
+                            <button type="button" class="btn btn-outline-secondary js-toggle-password" aria-label="Mostrar contraseña">
+                                <span class="js-eye">Ver</span>
+                            </button>
+                        </div>
                         <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ConfirmPassword" class="form-label">Confirmar contraseña</label>
+                        <div class="input-group">
+                            <input asp-for="ConfirmPassword" class="form-control js-password" type="password" autocomplete="new-password" />
+                            <button type="button" class="btn btn-outline-secondary js-toggle-password" aria-label="Mostrar contraseña">
+                                <span class="js-eye">Ver</span>
+                            </button>
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                     </div>
 
                     <div class="col-md-4">

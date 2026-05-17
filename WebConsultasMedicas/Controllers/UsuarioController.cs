@@ -38,7 +38,7 @@ public class UsuarioController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(string correo, string password, int idRol, bool estado)
+    public async Task<IActionResult> Create(string correo, string password, string confirmPassword, int idRol, bool estado)
     {
         ViewData["Title"] = "Nuevo usuario";
 
@@ -49,6 +49,14 @@ public class UsuarioController : Controller
         if (string.IsNullOrWhiteSpace(password))
         {
             ModelState.AddModelError("Password", "La contraseña es obligatoria.");
+        }
+        if (string.IsNullOrWhiteSpace(confirmPassword))
+        {
+            ModelState.AddModelError("ConfirmPassword", "Confirma la contraseña.");
+        }
+        else if (!string.Equals(password ?? string.Empty, confirmPassword ?? string.Empty, StringComparison.Ordinal))
+        {
+            ModelState.AddModelError("ConfirmPassword", "Las contraseñas no coinciden.");
         }
 
         var usuario = new Usuario
@@ -94,7 +102,7 @@ public class UsuarioController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, string correo, string? password, int idRol, bool estado)
+    public async Task<IActionResult> Edit(int id, string correo, string? password, string? confirmPassword, int idRol, bool estado)
     {
         var usuario = await _context.Usuarios.FindAsync(id);
         if (usuario is null) return NotFound();
@@ -108,6 +116,15 @@ public class UsuarioController : Controller
 
         if (!string.IsNullOrWhiteSpace(password))
         {
+            if (string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                ModelState.AddModelError("ConfirmPassword", "Confirma la contraseña.");
+            }
+            else if (!string.Equals(password, confirmPassword, StringComparison.Ordinal))
+            {
+                ModelState.AddModelError("ConfirmPassword", "Las contraseñas no coinciden.");
+            }
+
             usuario.ClaveHash = PasswordHasher.Sha256Hex(password);
         }
 

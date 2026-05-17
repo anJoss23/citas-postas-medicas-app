@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using WebConsultasMedicas.Data;
+using WebConsultasMedicas.Hubs;
 using WebConsultasMedicas.Models;
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebConsultasMedicas.Controllers;
 
@@ -12,10 +14,12 @@ namespace WebConsultasMedicas.Controllers;
 public class PortalController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly IHubContext<CitasHub> _hub;
 
-    public PortalController(ApplicationDbContext context)
+    public PortalController(ApplicationDbContext context, IHubContext<CitasHub> hub)
     {
         _context = context;
+        _hub = hub;
     }
 
     public async Task<IActionResult> Buscar(int? idEspecialidad, string? medico)
@@ -71,10 +75,16 @@ public class PortalController : Controller
             return NotFound();
         }
 
+        var reservedHorarioIds = _context.CitasMedicas.AsNoTracking()
+            .Where(c => c.IdEstadoCita != 3) // 3=Cancelada
+            .Select(c => c.IdHorarioMedico)
+            .Distinct();
+
         var horarios = await _context.HorariosMedicos.AsNoTracking()
             .Include(h => h.Turno)
             .Where(h => h.IdMedico == idMedico && h.Estado)
             .Where(h => h.Fecha >= DateOnly.FromDateTime(DateTime.Today))
+            .Where(h => !reservedHorarioIds.Contains(h.IdHorarioMedico))
             .OrderBy(h => h.Fecha)
             .ThenBy(h => h.HoraInicio)
             .ToListAsync();
@@ -106,6 +116,24 @@ public class PortalController : Controller
             Horario = horario
         };
 
+        if (User.IsInRole("Administrador"))
+        {
+            var pacientes = await _context.Pacientes.AsNoTracking()
+                .Include(p => p.Usuario)
+                .Where(p => p.Estado && p.Usuario.Estado)
+                .OrderBy(p => p.ApellidoPaterno)
+                .ThenBy(p => p.ApellidoMaterno)
+                .ThenBy(p => p.Nombres)
+                .Select(p => new
+                {
+                    p.IdPaciente,
+                    Nombre = $"{p.ApellidoPaterno} {p.ApellidoMaterno}, {p.Nombres} ({p.DNI})"
+                })
+                .ToListAsync();
+
+            model.Pacientes = new SelectList(pacientes, "IdPaciente", "Nombre");
+        }
+
         model.HorasDisponibles = BuildHorasSelectList(horario, model.HoraCita);
         return View(model);
     }
@@ -130,21 +158,59 @@ public class PortalController : Controller
         model.Horario = horario;
         model.HorasDisponibles = BuildHorasSelectList(horario, model.HoraCita);
 
-        var idUsuario = GetUsuarioId();
-        if (idUsuario is null)
+        int pacienteId;
+        if (User.IsInRole("Administrador"))
         {
-            return Forbid();
+            if (model.IdPaciente is null || model.IdPaciente.Value <= 0)
+            {
+                ModelState.AddModelError(nameof(PortalReservarViewModel.IdPaciente), "Seleccione un paciente.");
+            }
+            else
+            {
+                var existsPaciente = await _context.Pacientes.AsNoTracking()
+                    .Include(p => p.Usuario)
+                    .AnyAsync(p => p.IdPaciente == model.IdPaciente.Value && p.Estado && p.Usuario.Estado);
+
+                if (!existsPaciente)
+                {
+                    ModelState.AddModelError(nameof(PortalReservarViewModel.IdPaciente), "Paciente inválido.");
+                }
+            }
+
+            var pacientes = await _context.Pacientes.AsNoTracking()
+                .Include(p => p.Usuario)
+                .Where(p => p.Estado && p.Usuario.Estado)
+                .OrderBy(p => p.ApellidoPaterno)
+                .ThenBy(p => p.ApellidoMaterno)
+                .ThenBy(p => p.Nombres)
+                .Select(p => new
+                {
+                    p.IdPaciente,
+                    Nombre = $"{p.ApellidoPaterno} {p.ApellidoMaterno}, {p.Nombres} ({p.DNI})"
+                })
+                .ToListAsync();
+            model.Pacientes = new SelectList(pacientes, "IdPaciente", "Nombre", model.IdPaciente);
+
+            pacienteId = model.IdPaciente ?? 0;
         }
-
-        var pacienteId = await _context.Pacientes
-            .Where(p => p.IdUsuario == idUsuario.Value)
-            .Select(p => p.IdPaciente)
-            .FirstOrDefaultAsync();
-
-        if (pacienteId == 0)
+        else
         {
-            TempData["Error"] = "No se encontró tu perfil de paciente.";
-            return RedirectToAction(nameof(Buscar));
+            var idUsuario = GetUsuarioId();
+            if (idUsuario is null)
+            {
+                return Forbid();
+            }
+
+            pacienteId = await _context.Pacientes
+                .Where(p => p.IdUsuario == idUsuario.Value)
+                .Select(p => p.IdPaciente)
+                .FirstOrDefaultAsync();
+
+            if (pacienteId == 0)
+            {
+                TempData["Error"] = "No se encontró tu perfil de paciente.";
+                return RedirectToAction(nameof(Buscar));
+            }
         }
 
         if (model.FechaCita != horario.Fecha)
@@ -189,6 +255,7 @@ public class PortalController : Controller
         try
         {
             await _context.SaveChangesAsync();
+            await _hub.Clients.Group(CitasHub.GroupForMedico(cita.IdMedico)).SendAsync("citasUpdated");
             TempData["Success"] = "Cita registrada.";
             return RedirectToAction(nameof(MisCitas));
         }
@@ -303,6 +370,7 @@ public class PortalController : Controller
         try
         {
             await _context.SaveChangesAsync();
+            await _hub.Clients.Group(CitasHub.GroupForMedico(cita.IdMedico)).SendAsync("citasUpdated");
             TempData["Success"] = "Cita cancelada.";
         }
         catch (DbUpdateException)

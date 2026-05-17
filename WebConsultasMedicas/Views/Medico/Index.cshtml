@@ -14,7 +14,6 @@
         <table class="table align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th style="width: 90px;">ID</th>
                     <th>CMP</th>
                     <th>Nombre</th>
                     <th>Especialidad</th>
@@ -28,7 +27,7 @@
                 @if (Model.Count == 0)
                 {
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No hay médicos.</td>
+                        <td colspan="7" class="text-center text-muted py-4">No hay médicos.</td>
                     </tr>
                 }
                 else
@@ -36,7 +35,6 @@
                     foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.IdMedico</td>
                             <td class="fw-semibold">@item.CMP</td>
                             <td>@($"{item.ApellidoPaterno} {item.ApellidoMaterno}, {item.Nombres}")</td>
                             <td class="text-muted">@item.Especialidad?.Nombre</td>
@@ -63,3 +61,4 @@
         </table>
     </div>
 </div>
+

@@ -8,6 +8,10 @@ public class PortalReservarViewModel
     [Required]
     public int IdHorarioMedico { get; set; }
 
+    // Solo Administrador: permite reservar para un paciente específico.
+    public int? IdPaciente { get; set; }
+    public SelectList? Pacientes { get; set; }
+
     [Required]
     public DateOnly FechaCita { get; set; }
 
@@ -23,4 +27,3 @@ public class PortalReservarViewModel
     public HorarioMedico? Horario { get; set; }
     public SelectList? HorasDisponibles { get; set; }
 }
-

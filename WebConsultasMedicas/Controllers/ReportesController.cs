@@ -19,7 +19,7 @@ public class ReportesController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> AtencionesPorMedico(int? idEspecialidad, int? idMedico)
+    public async Task<IActionResult> AtencionesPorMedico(int? idEspecialidad, int? idMedico, DateOnly? fechaDesde, DateOnly? fechaHasta)
     {
         ViewData["Title"] = "Atenciones por médico";
 
@@ -47,12 +47,14 @@ public class ReportesController : Controller
             })
             .ToListAsync();
 
-        var rows = await BuildAtencionesRowsAsync(idEspecialidad, idMedico);
+        var rows = await BuildAtencionesRowsAsync(idEspecialidad, idMedico, fechaDesde, fechaHasta);
 
         return View(new AtencionesPorMedicoFilterViewModel
         {
             IdEspecialidad = idEspecialidad,
             IdMedico = idMedico,
+            FechaDesde = fechaDesde,
+            FechaHasta = fechaHasta,
             Especialidades = new SelectList(especialidades, nameof(Especialidad.IdEspecialidad), nameof(Especialidad.Nombre), idEspecialidad),
             Medicos = new SelectList(medicos, "IdMedico", "Nombre", idMedico),
             Rows = rows
@@ -60,9 +62,9 @@ public class ReportesController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AtencionesPorMedicoExcel(int? idEspecialidad, int? idMedico)
+    public async Task<IActionResult> AtencionesPorMedicoExcel(int? idEspecialidad, int? idMedico, DateOnly? fechaDesde, DateOnly? fechaHasta)
     {
-        var rows = await BuildAtencionesRowsAsync(idEspecialidad, idMedico);
+        var rows = await BuildAtencionesRowsAsync(idEspecialidad, idMedico, fechaDesde, fechaHasta);
 
         var csv = new StringBuilder();
         AppendCsvRow(csv, "IdCita", "Fecha", "Hora", "Especialidad", "Médico", "Paciente", "Estado", "ÚltimoCambio", "ÚltimaObservación");
@@ -87,7 +89,7 @@ public class ReportesController : Controller
         return File(bytes, "text/csv; charset=utf-8", "AtencionesPorMedico.csv");
     }
 
-    public async Task<IActionResult> HistorialPaciente(int? idPaciente)
+    public async Task<IActionResult> HistorialPaciente(int? idPaciente, DateOnly? fechaDesde, DateOnly? fechaHasta)
     {
         ViewData["Title"] = "Historial del paciente";
 
@@ -103,21 +105,23 @@ public class ReportesController : Controller
             .ToListAsync();
 
         var rows = idPaciente.HasValue
-            ? await BuildHistorialPacienteRowsAsync(idPaciente.Value)
+            ? await BuildHistorialPacienteRowsAsync(idPaciente.Value, fechaDesde, fechaHasta)
             : Array.Empty<HistorialPacienteRow>();
 
         return View(new HistorialPacienteViewModel
         {
             IdPaciente = idPaciente,
+            FechaDesde = fechaDesde,
+            FechaHasta = fechaHasta,
             Pacientes = new SelectList(pacientes, "IdPaciente", "Nombre", idPaciente),
             Rows = rows
         });
     }
 
     [HttpGet]
-    public async Task<IActionResult> HistorialPacienteExcel(int idPaciente)
+    public async Task<IActionResult> HistorialPacienteExcel(int idPaciente, DateOnly? fechaDesde, DateOnly? fechaHasta)
     {
-        var rows = await BuildHistorialPacienteRowsAsync(idPaciente);
+        var rows = await BuildHistorialPacienteRowsAsync(idPaciente, fechaDesde, fechaHasta);
 
         var csv = new StringBuilder();
         AppendCsvRow(csv, "IdCita", "FechaCita", "HoraCita", "Especialidad", "Médico", "FechaCambio", "Estado", "Observación", "UsuarioAcción");
@@ -173,10 +177,20 @@ public class ReportesController : Controller
         sb.AppendLine();
     }
 
-    private async Task<IReadOnlyList<AtencionPorMedicoRow>> BuildAtencionesRowsAsync(int? idEspecialidad, int? idMedico)
+    private async Task<IReadOnlyList<AtencionPorMedicoRow>> BuildAtencionesRowsAsync(int? idEspecialidad, int? idMedico, DateOnly? fechaDesde, DateOnly? fechaHasta)
     {
         var baseQuery = _context.CitasMedicas.AsNoTracking()
             .Where(c => c.IdEstadoCita == 2); // Atendida
+
+        if (fechaDesde.HasValue)
+        {
+            baseQuery = baseQuery.Where(c => c.FechaCita >= fechaDesde.Value);
+        }
+
+        if (fechaHasta.HasValue)
+        {
+            baseQuery = baseQuery.Where(c => c.FechaCita <= fechaHasta.Value);
+        }
 
         if (idEspecialidad.HasValue)
         {
@@ -234,7 +248,7 @@ public class ReportesController : Controller
         }).ToList();
     }
 
-    private async Task<IReadOnlyList<HistorialPacienteRow>> BuildHistorialPacienteRowsAsync(int idPaciente)
+    private async Task<IReadOnlyList<HistorialPacienteRow>> BuildHistorialPacienteRowsAsync(int idPaciente, DateOnly? fechaDesde, DateOnly? fechaHasta)
     {
         var query = _context.HistorialCitas.AsNoTracking()
             .Include(h => h.EstadoCita)
@@ -243,6 +257,16 @@ public class ReportesController : Controller
             .Include(h => h.CitaMedica)
                 .ThenInclude(c => c.Especialidad)
             .Where(h => h.CitaMedica.IdPaciente == idPaciente);
+
+        if (fechaDesde.HasValue)
+        {
+            query = query.Where(h => h.CitaMedica.FechaCita >= fechaDesde.Value);
+        }
+
+        if (fechaHasta.HasValue)
+        {
+            query = query.Where(h => h.CitaMedica.FechaCita <= fechaHasta.Value);
+        }
 
         var items = await query
             .OrderByDescending(h => h.FechaCambio)

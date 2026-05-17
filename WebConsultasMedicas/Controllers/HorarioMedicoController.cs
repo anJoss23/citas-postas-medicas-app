@@ -46,10 +46,20 @@ public class HorarioMedicoController : Controller
         ViewData["Title"] = "Nuevo horario";
         await LoadCombosAsync(item.IdMedico, item.IdTurno);
 
-        item.IdEspecialidad = await _context.Medicos
+        var medicoInfo = await _context.Medicos.AsNoTracking()
             .Where(m => m.IdMedico == item.IdMedico)
-            .Select(m => m.IdEspecialidad)
+            .Select(m => new { m.IdEspecialidad, m.TiempoAtencionMin })
             .FirstOrDefaultAsync();
+
+        if (medicoInfo is null)
+        {
+            TempData["Error"] = "Médico inválido.";
+            return View(item);
+        }
+
+        item.IdEspecialidad = medicoInfo.IdEspecialidad;
+        var tiempoAtencionMin = medicoInfo.TiempoAtencionMin;
+        if (tiempoAtencionMin <= 0 || tiempoAtencionMin > 60) tiempoAtencionMin = 60;
 
         ModelState.Remove(nameof(HorarioMedico.IdEspecialidad));
         ModelState.Remove(nameof(HorarioMedico.Medico));
@@ -73,9 +83,9 @@ public class HorarioMedicoController : Controller
         }
 
         var totalMinutes = (item.HoraFin.ToTimeSpan() - item.HoraInicio.ToTimeSpan()).TotalMinutes;
-        if (totalMinutes % 60 != 0)
+        if (totalMinutes % tiempoAtencionMin != 0)
         {
-            ModelState.AddModelError(nameof(HorarioMedico.HoraFin), "El rango debe ser múltiplo de 1 hora.");
+            ModelState.AddModelError(nameof(HorarioMedico.HoraFin), $"El rango debe ser múltiplo de {tiempoAtencionMin} minuto(s).");
             return View(item);
         }
 
@@ -83,7 +93,7 @@ public class HorarioMedicoController : Controller
         var start = item.HoraInicio;
         while (start < item.HoraFin)
         {
-            var end = start.AddHours(1);
+            var end = start.AddMinutes(tiempoAtencionMin);
             if (end > item.HoraFin) break;
 
             slots.Add(new HorarioMedico
@@ -119,7 +129,7 @@ public class HorarioMedicoController : Controller
 
         if (slots.Count == 0)
         {
-            TempData["Error"] = "No se generaron bloques. Verifica que el rango sea por horas completas.";
+            TempData["Error"] = $"No se generaron bloques. Verifica que el rango sea múltiplo de {tiempoAtencionMin} minuto(s).";
             return View(item);
         }
 
@@ -133,7 +143,7 @@ public class HorarioMedicoController : Controller
         try
         {
             await _context.SaveChangesAsync();
-            TempData["Success"] = $"Horarios registrados: {slots.Count} bloque(s) de 1 hora.";
+            TempData["Success"] = $"Horarios registrados: {slots.Count} bloque(s) de {tiempoAtencionMin} minuto(s).";
             return RedirectToAction(nameof(Index));
         }
         catch (DbUpdateException)
@@ -163,10 +173,18 @@ public class HorarioMedicoController : Controller
         ViewData["Title"] = "Editar horario";
         await LoadCombosAsync(item.IdMedico, item.IdTurno);
 
-        item.IdEspecialidad = await _context.Medicos
+        var medicoInfo = await _context.Medicos.AsNoTracking()
             .Where(m => m.IdMedico == item.IdMedico)
-            .Select(m => m.IdEspecialidad)
+            .Select(m => new { m.IdEspecialidad })
             .FirstOrDefaultAsync();
+
+        if (medicoInfo is null)
+        {
+            TempData["Error"] = "Médico inválido.";
+            return View(item);
+        }
+
+        item.IdEspecialidad = medicoInfo.IdEspecialidad;
 
         ModelState.Remove(nameof(HorarioMedico.IdEspecialidad));
         ModelState.Remove(nameof(HorarioMedico.Medico));

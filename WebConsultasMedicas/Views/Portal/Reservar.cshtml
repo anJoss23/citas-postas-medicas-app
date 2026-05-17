@@ -28,6 +28,17 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             </div>
 
+            @if (User.IsInRole("Administrador"))
+            {
+                <div class="col-12">
+                    <label asp-for="IdPaciente" class="form-label">Paciente</label>
+                    <select asp-for="IdPaciente" class="form-select" asp-items="Model.Pacientes">
+                        <option value="">-- Seleccione --</option>
+                    </select>
+                    <span asp-validation-for="IdPaciente" class="text-danger"></span>
+                </div>
+            }
+
             <div class="col-md-4">
                 <label class="form-label">Fecha</label>
                 <input class="form-control" value="@fechaText" disabled />

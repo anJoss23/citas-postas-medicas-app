@@ -34,6 +34,10 @@ public class Medico
     [EmailAddress(ErrorMessage = "Correo inválido.")]
     public string? Correo { get; set; }
 
+    [Required(ErrorMessage = "El tiempo de atención es obligatorio.")]
+    [Range(1, 60, ErrorMessage = "El tiempo de atención debe ser entre 1 y 60 minutos.")]
+    public int TiempoAtencionMin { get; set; } = 60;
+
     public bool Estado { get; set; } = true;
 
     public Especialidad Especialidad { get; set; } = null!;

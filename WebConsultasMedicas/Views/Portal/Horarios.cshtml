@@ -24,7 +24,6 @@
         <table class="table table-hover table-sm align-middle mb-0">
             <thead>
                 <tr>
-                    <th style="width: 90px;">ID</th>
                     <th style="width: 220px;">Fecha</th>
                     <th style="width: 170px;">Horario</th>
                     <th style="width: 140px;">Turno</th>
@@ -35,7 +34,7 @@
                 @if (Model.Count == 0)
                 {
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">No hay horarios activos.</td>
+                        <td colspan="4" class="text-center text-muted py-4">No hay horarios activos.</td>
                     </tr>
                 }
                 else
@@ -46,7 +45,6 @@
                         diaNombre = string.IsNullOrWhiteSpace(diaNombre) ? "" : char.ToUpper(diaNombre[0]) + diaNombre[1..];
 
                         <tr>
-                            <td class="text-muted">@h.IdHorarioMedico</td>
                             <td>
                                 <div class="fw-semibold">@diaNombre</div>
                                 <div class="text-muted small">@h.Fecha.ToString("yyyy-MM-dd")</div>

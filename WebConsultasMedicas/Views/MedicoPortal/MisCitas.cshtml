@@ -16,7 +16,6 @@
         <table class="table align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th style="width: 90px;">ID</th>
                     <th style="width: 160px;">Fecha</th>
                     <th>Paciente</th>
                     <th>Especialidad</th>
@@ -28,7 +27,7 @@
                 @if (Model.Count == 0)
                 {
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-4">No tienes citas.</td>
+                        <td colspan="5" class="text-center text-muted py-4">No tienes citas.</td>
                     </tr>
                 }
                 else
@@ -36,7 +35,6 @@
                     foreach (var c in Model)
                     {
                         <tr>
-                            <td>@c.IdCita</td>
                             <td class="text-muted">@($"{c.FechaCita:yyyy-MM-dd} {c.HoraCita:hh\\:mm}")</td>
                             <td>@($"{c.Paciente?.ApellidoPaterno} {c.Paciente?.ApellidoMaterno}, {c.Paciente?.Nombres}")</td>
                             <td class="fw-semibold">@c.Especialidad?.Nombre</td>
@@ -59,3 +57,41 @@
     </div>
 </div>
 
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.5/signalr.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        (function () {
+            const initialToken = "@(ViewBag.UpdateToken ?? "")";
+
+            function startPolling() {
+                if (!initialToken) return;
+                let lastToken = initialToken;
+                window.setInterval(async function () {
+                    try {
+                        const res = await fetch("@Url.Action("UpdateToken", "MedicoPortal")", { cache: "no-store" });
+                        if (!res.ok) return;
+                        const data = await res.json();
+                        if (data && data.token && data.token !== lastToken) {
+                            window.location.reload();
+                        }
+                    } catch { }
+                }, 8000);
+            }
+
+            if (!window.signalR) {
+                startPolling();
+                return;
+            }
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/hubs/citas")
+                .withAutomaticReconnect()
+                .build();
+
+            connection.on("citasUpdated", function () {
+                window.location.reload();
+            });
+
+            connection.start().catch(function () { startPolling(); });
+        })();
+    </script>
+}

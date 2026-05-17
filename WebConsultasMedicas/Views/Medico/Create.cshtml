@@ -17,7 +17,13 @@
                 <select asp-for="IdEspecialidad" class="form-select" asp-items="ViewBag.Especialidades"></select>
                 <span asp-validation-for="IdEspecialidad" class="text-danger"></span>
             </div>
-            <div class="col-md-6"></div>
+
+            <div class="col-md-6">
+                <label asp-for="TiempoAtencionMin" class="form-label"></label>
+                <input asp-for="TiempoAtencionMin" class="form-control" type="number" min="1" max="60" />
+                <span asp-validation-for="TiempoAtencionMin" class="text-danger"></span>
+                <div class="form-text">Máximo 60 minutos. Se usará para generar bloques de horarios.</div>
+            </div>
 
             <div class="col-md-6">
                 <label asp-for="Correo" class="form-label">Correo (usuario médico)</label>
@@ -29,11 +35,27 @@
                 <div class="form-text">Se crea automáticamente un usuario con rol Medico.</div>
             </div>
 
-            <div class="col-md-6">
-                <label asp-for="Password" class="form-label">Contraseña</label>
-                <input asp-for="Password" type="password" class="form-control" />
+            <div class="col-md-3">
+                <label asp-for="Password" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="Password" type="password" class="form-control js-password" autocomplete="new-password" />
+                    <button type="button" class="btn btn-outline-secondary js-toggle-password" aria-label="Mostrar contraseña">
+                        <span class="js-eye">Ver</span>
+                    </button>
+                </div>
                 <span asp-validation-for="Password" class="text-danger"></span>
                 <div class="form-text">Si lo dejas vacío, se usa <code>medico123</code>.</div>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <div class="input-group">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control js-password" autocomplete="new-password" />
+                    <button type="button" class="btn btn-outline-secondary js-toggle-password" aria-label="Mostrar contraseña">
+                        <span class="js-eye">Ver</span>
+                    </button>
+                </div>
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
             <div class="col-md-4">
@@ -41,28 +63,31 @@
                 <input asp-for="CMP" class="form-control" autocomplete="off" />
                 <span asp-validation-for="CMP" class="text-danger"></span>
             </div>
-            <div class="col-md-8"></div>
+
+            <div class="col-md-4">
+                <label asp-for="Telefono" class="form-label"></label>
+                <input asp-for="Telefono" class="form-control" autocomplete="off" />
+                <span asp-validation-for="Telefono" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-4"></div>
 
             <div class="col-md-4">
                 <label asp-for="ApellidoPaterno" class="form-label"></label>
                 <input asp-for="ApellidoPaterno" class="form-control" autocomplete="off" />
                 <span asp-validation-for="ApellidoPaterno" class="text-danger"></span>
             </div>
+
             <div class="col-md-4">
                 <label asp-for="ApellidoMaterno" class="form-label"></label>
                 <input asp-for="ApellidoMaterno" class="form-control" autocomplete="off" />
                 <span asp-validation-for="ApellidoMaterno" class="text-danger"></span>
             </div>
+
             <div class="col-md-4">
                 <label asp-for="Nombres" class="form-label"></label>
                 <input asp-for="Nombres" class="form-control" autocomplete="off" />
                 <span asp-validation-for="Nombres" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label asp-for="Telefono" class="form-label"></label>
-                <input asp-for="Telefono" class="form-control" autocomplete="off" />
-                <span asp-validation-for="Telefono" class="text-danger"></span>
             </div>
 
             <div class="col-12">
@@ -83,3 +108,4 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
+

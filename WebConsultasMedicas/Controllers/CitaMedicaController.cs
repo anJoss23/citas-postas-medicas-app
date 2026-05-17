@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebConsultasMedicas.Data;
+using WebConsultasMedicas.Hubs;
 using WebConsultasMedicas.Models;
 using WebConsultasMedicas.Models.Citas;
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebConsultasMedicas.Controllers;
 
@@ -12,10 +14,12 @@ namespace WebConsultasMedicas.Controllers;
 public class CitaMedicaController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly IHubContext<CitasHub> _hub;
 
-    public CitaMedicaController(ApplicationDbContext context)
+    public CitaMedicaController(ApplicationDbContext context, IHubContext<CitasHub> hub)
     {
         _context = context;
+        _hub = hub;
     }
 
     public async Task<IActionResult> Index()
@@ -103,6 +107,7 @@ public class CitaMedicaController : Controller
         try
         {
             await _context.SaveChangesAsync();
+            await _hub.Clients.Group(CitasHub.GroupForMedico(item.IdMedico)).SendAsync("citasUpdated");
             TempData["Success"] = "Cita registrada (Programada).";
             return RedirectToAction(nameof(Index));
         }
@@ -156,6 +161,7 @@ public class CitaMedicaController : Controller
         try
         {
             await _context.SaveChangesAsync();
+            await _hub.Clients.Group(CitasHub.GroupForMedico(item.IdMedico)).SendAsync("citasUpdated");
             TempData["Success"] = "Cita actualizada.";
             return RedirectToAction(nameof(Index));
         }
@@ -189,10 +195,12 @@ public class CitaMedicaController : Controller
         var item = await _context.CitasMedicas.FindAsync(id);
         if (item is null) return RedirectToAction(nameof(Index));
 
+        var medicoId = item.IdMedico;
         _context.CitasMedicas.Remove(item);
         try
         {
             await _context.SaveChangesAsync();
+            await _hub.Clients.Group(CitasHub.GroupForMedico(medicoId)).SendAsync("citasUpdated");
             TempData["Success"] = "Cita eliminada.";
         }
         catch (DbUpdateException)

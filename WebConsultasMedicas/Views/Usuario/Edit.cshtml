@@ -21,11 +21,28 @@
 
             <div class="col-md-6">
                 <label class="form-label" for="password">Nueva contraseña</label>
-                <input id="password" name="password" type="password" class="form-control" />
+                <div class="input-group">
+                    <input id="password" name="password" type="password" class="form-control js-password" autocomplete="new-password" />
+                    <button type="button" class="btn btn-outline-secondary js-toggle-password" aria-label="Mostrar contraseña">
+                        <span class="js-eye">Ver</span>
+                    </button>
+                </div>
+                <span class="text-danger">@Html.ValidationMessage("Password")</span>
                 @if (ViewBag.ResetPasswordHint is string hint)
                 {
                     <div class="form-text">@hint</div>
                 }
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label" for="confirmPassword">Repetir contraseña</label>
+                <div class="input-group">
+                    <input id="confirmPassword" name="confirmPassword" type="password" class="form-control js-password" autocomplete="new-password" />
+                    <button type="button" class="btn btn-outline-secondary js-toggle-password" aria-label="Mostrar contraseña">
+                        <span class="js-eye">Ver</span>
+                    </button>
+                </div>
+                <span class="text-danger">@Html.ValidationMessage("ConfirmPassword")</span>
             </div>
 
             <div class="col-md-6">

@@ -6,6 +6,8 @@ public class AtencionesPorMedicoFilterViewModel
 {
     public int? IdEspecialidad { get; set; }
     public int? IdMedico { get; set; }
+    public DateOnly? FechaDesde { get; set; }
+    public DateOnly? FechaHasta { get; set; }
 
     public SelectList? Especialidades { get; set; }
     public SelectList? Medicos { get; set; }
@@ -27,4 +29,3 @@ public class AtencionPorMedicoRow
     public string? UltimaObservacion { get; set; }
     public DateTime? UltimoCambio { get; set; }
 }
-

@@ -18,7 +18,6 @@
         <table class="table align-middle mb-0">
             <thead class="table-light">
                 <tr>
-                    <th style="width: 90px;">ID</th>
                     <th>Nombre</th>
                     <th>Descripción</th>
                     <th style="width: 110px;">Estado</th>
@@ -29,7 +28,7 @@
                 @if (Model.Count == 0)
                 {
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-4">
+                        <td colspan="4" class="text-center text-muted py-4">
                             No hay especialidades registradas.
                         </td>
                     </tr>
@@ -39,7 +38,6 @@
                     foreach (var item in Model)
                     {
                         <tr>
-                            <td>@item.IdEspecialidad</td>
                             <td class="fw-semibold">@item.Nombre</td>
                             <td class="text-muted">@item.Descripcion</td>
                             <td>
