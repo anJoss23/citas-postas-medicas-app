@@ -18,8 +18,12 @@
 
                     <div class="col-md-6">
                         <label asp-for="Correo" class="form-label">Correo</label>
-                        <input asp-for="Correo" class="form-control" autocomplete="off" />
+                        <div class="input-group">
+                            <input asp-for="Correo" class="form-control" autocomplete="off" placeholder="usuario" />
+                            <span class="input-group-text">@@siscitasweb.local</span>
+                        </div>
                         <span asp-validation-for="Correo" class="text-danger"></span>
+                        <div class="form-text">No escribas el dominio; se agrega automáticamente.</div>
                     </div>
                     <div class="col-md-6">
                         <label asp-for="Password" class="form-label">Contraseña</label>
@@ -86,7 +90,7 @@
 
                     <div class="col-md-4">
                         <label asp-for="Direccion" class="form-label"></label>
-                        <input asp-for="Direccion" class="form-control" autocomplete="off" />
+                        <textarea asp-for="Direccion" class="form-control" rows="2" autocomplete="off"></textarea>
                         <span asp-validation-for="Direccion" class="text-danger"></span>
                     </div>
 

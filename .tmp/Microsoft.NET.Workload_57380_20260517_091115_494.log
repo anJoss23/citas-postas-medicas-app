@@ -1,0 +1,14 @@
+[2026-05-17 09:11:15.503] [0000E024] === Logging started ===
+[2026-05-17 09:11:16.198] [0000E024] Executing: "C:\Program Files\dotnet\dotnet.exe" build .\WebConsultasMedicas.sln --no-restore, PID: 57380, PPID: 20452
+[2026-05-17 09:11:16.206] [0000E024] IsElevated: False
+[2026-05-17 09:11:16.206] [0000E024] Is64BitProcess: True
+[2026-05-17 09:11:16.206] [0000E024] RebootPending: False
+[2026-05-17 09:11:16.206] [0000E024] ProcessorArchitecture: amd64
+[2026-05-17 09:11:16.206] [0000E024] HostArchitecture: x64
+[2026-05-17 09:11:16.206] [0000E024] SdkDirectory: 8.0.202
+[2026-05-17 09:11:16.206] [0000E024] VerifySignatures: False
+[2026-05-17 09:11:16.206] [0000E024] SDK feature band: 8.0.200
+[2026-05-17 09:11:26.672] [0000E024] Shutting down
+[2026-05-17 09:11:26.672] [0000E024] Shutdown completed.
+[2026-05-17 09:11:26.672] [0000E024] Restart required: False
+[2026-05-17 09:11:26.672] [0000E024] === Logging ended ===

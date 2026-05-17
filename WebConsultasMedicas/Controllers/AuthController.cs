@@ -135,7 +135,13 @@ public class AuthController : Controller
             return View(model);
         }
 
-        var email = model.Correo.Trim().ToLowerInvariant();
+        var email = model.Correo.Trim();
+        if (!email.Contains('@'))
+        {
+            email = $"{email}@siscitasweb.local";
+        }
+        email = email.ToLowerInvariant();
+        model.Correo = email;
         var existsEmail = await _context.Usuarios.AnyAsync(u => u.Correo.ToLower() == email);
         if (existsEmail)
         {
